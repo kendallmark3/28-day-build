@@ -279,6 +279,7 @@ function makeEvidence(f,c){
 function makeReview(f,c){
   return {id:c.id,intentId:f.intentId,created:iso(c.now),
     criteria:(Array.isArray(f.criteria)?f.criteria:[]).map(x=>({text:str(x&&x.text),status:x&&x.status})),
+    findings:(Array.isArray(f.findings)?f.findings:[]).map(x=>({text:str(x&&x.text),label:x&&x.label})),
     notChecked:str(f.notChecked).trim(),summary:str(f.summary).trim()};
 }
 function makeCapability(f,c){
@@ -307,6 +308,7 @@ function problemsReview(r,intentIds){
   const p=[];
   if(!intentIds.includes(r.intentId))p.push('intent does not exist');
   if(!Array.isArray(r.criteria)||r.criteria.some(x=>!x||!STATUSES.includes(x.status)))p.push('a criterion status is not met, unmet, or untested');
+  if(r.findings!==undefined&&(!Array.isArray(r.findings)||r.findings.some(x=>!x||!str(x.text).trim()||!LABELS.includes(x.label))))p.push('a finding has no text or a label that is not observed, inferred, or assumed');
   return p;
 }
 function problemsCapability(c){
@@ -332,7 +334,7 @@ function normalizeState(raw,now){
     consequence:CONSEQUENCES.includes(i.consequence)?i.consequence:''}));
   const ids=intents.map(i=>i.id);
   const evidence=keep(raw.evidence,e=>problemsEvidence(e,ids));
-  const reviews=keep(raw.reviews,r=>problemsReview(r,ids));
+  const reviews=keep(raw.reviews,r=>problemsReview(r,ids),r=>Object.assign({},r,{findings:Array.isArray(r.findings)?r.findings:[]}));
   const stored=keep(raw.capabilities,problemsCapability,c=>Object.assign({},c,{uses:c.uses.map(u=>({date:str(u.date),success:u.success})),promoted:c.promoted===true}));
   const builtIns=builtInCapabilities().map(b=>{
     const s=stored.find(c=>c.id===b.id);
@@ -361,6 +363,7 @@ function sampleState(now){
   const statuses=['met','met','untested','unmet'];
   const reviews=[makeReview({intentId:first.id,
     criteria:criteria.map((text,i)=>({text,status:statuses[i]})),
+    findings:[{text:'The Reports page shows an "Export CSV" button.',label:'observed'},{text:'The export is probably fast enough because the query filters by user and month.',label:'inferred'},{text:'Customers can open the CSV in a spreadsheet application.',label:'assumed'}],
     notChecked:'Behavior with more than 10,000 rows.',
     summary:'Two of four criteria are met. The error message is not shown when the month has no data.'},{id:'rv-'+now+'-0',now})];
   const day=iso(now);
@@ -374,4 +377,26 @@ function sampleState(now){
 // A new intent id: never equal to an existing numeric id, even when two intents are saved in the same millisecond.
 function nextIntentId(intents,now){
   return intents.reduce((m,i)=>typeof i.id==='number'&&i.id>=m?i.id+1:m,now);
+}
+
+// Epistemic status: how many claims are observed, inferred, or assumed, and how many assumptions still need confirming.
+function labelCounts(evidence){
+  const c={observed:0,inferred:0,assumed:0};
+  evidence.forEach(e=>{if(c[e.label]!==undefined)c[e.label]++;});
+  return c;
+}
+function epistemicSummary(evidence){
+  const n=evidence.length;
+  if(!n)return 'No claims recorded yet.';
+  const c=labelCounts(evidence);
+  const many=(k,w)=>k+' '+w+(k===1?'':'s');
+  let t=many(n,'claim')+': '+c.observed+' observed, '+c.inferred+' inferred, '+c.assumed+' assumed.';
+  if(c.assumed>0)t+=' '+many(c.assumed,'assumed claim')+' still '+(c.assumed===1?'needs':'need')+' confirming.';
+  return t;
+}
+// A new evidence id that no existing record has.
+function nextEvidenceId(evidence,now){
+  let n=0;
+  while(evidence.some(e=>e.id==='ev-'+now+'-'+n))n++;
+  return 'ev-'+now+'-'+n;
 }

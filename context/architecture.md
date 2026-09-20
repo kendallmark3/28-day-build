@@ -13,6 +13,7 @@ IntentWorkbench is intentionally local-first.
 Built (as of Day 8):
 - Intents view: a dashboard (intents saved, intents missing a constraint or stop condition, next step), the intent form with sample text, and the saved-intents list with edit and a confirmed reset to sample data.
 - Jira story modal: paste a story, get the six parts filled in, notes on what to improve, and a Markdown download. Rule-based; runs in the browser.
+- Review view: pick an intent, see its evidence and reviews, add a claim with a label, and change a claim's label.
 - Overview view: a count of each stored record type.
 - References view (including the project context files) and About view.
 

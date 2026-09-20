@@ -12,6 +12,9 @@
 - **Intent check**: reading an intent before building it, to find ambiguity, missing pieces, contradictions, uncheckable criteria, and a missing stop condition. See `skills/intent-check.md`.
 - **Progressive intent**: working in rounds, where the evidence from one result decides the next, sharper intent.
 - **Observed / inferred / assumed**: the three labels for an evidence claim. Observed was directly seen, inferred was reasoned from observations, assumed is not yet verified.
+- **Claim**: one statement about an intent's result that someone may rely on. Every claim is labelled observed, inferred, or assumed.
+- **Evidence record**: a claim attached to one intent, with its label and where it came from.
+- **Review record**: a review of one intent: each success criterion marked met, unmet, or untested, findings each labelled observed, inferred, or assumed, and what was not checked.
 - **Ready**: an intent with an outcome, at least one constraint, and a stop condition (business rules 1 and 3).
 - **Dashboard**: the summary at the top of the Intents view: intents saved, intents missing a constraint or stop condition, and the next step.
 - **Jira story**: the ticket text a user pastes into the app to start an intent.

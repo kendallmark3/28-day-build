@@ -17,10 +17,8 @@ require('./h.js')('day09',async c=>{
   const why=part('Why this works')||'';
   const whyLines=why.split('\n').filter(l=>l.startsWith('- **'));
   rec('D9-4 "Why this works" has one line for each of the six parts',['Intent','Inputs','Outputs','Constraints','Success criteria','Stop when'].every(n=>whyLines.some(l=>l.startsWith('- **'+n+':**'))),whyLines.length);
-  // smaller
-  const six=['architecture.md','business-rules.md','glossary.md','non-goals.md','security.md','ux-standard.md'];
-  const lines=six.reduce((a,f)=>a+ctx(f).replace(/\n$/,'').split('\n').length,0);
-  rec('D9-5 the six existing context files have fewer lines than the 97 before',lines<97,lines+' lines');
+  // (retired) The Day 9 acceptance check "the six existing context files have fewer lines than the 97 before" was a point-in-time check.
+  // Later days legitimately add glossary and architecture content (100 lines after Day 16), so it is not an invariant.
   const ng=ctx('non-goals.md');
   rec('D9-6 removed duplicates are gone and the merged non-goal is present',!/should demonstrate the method before adding platform complexity/.test(ng)&&!/does not store credentials/.test(ng)&&/not a Claude chat clone, an autonomous agent platform, or an enterprise workflow engine/.test(ng),'');
   rec('D9-7 the References view lists example-intent.md with a purpose line',await (async()=>{await c.go('#references');return page.$$eval('#contextList li',ls=>ls.some(l=>/example-intent\.md/.test(l.textContent)&&/worked example/.test(l.textContent)));})(),'');

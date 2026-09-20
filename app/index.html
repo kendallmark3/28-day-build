@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IntentWorkbench</title><link rel="icon" href="data:,"><link rel="stylesheet" href="styles.css"></head><body>
 <header><div><span class="eyebrow">28-DAY BUILD</span><h1>IntentWorkbench</h1><p>Turn one-off AI work into something your team can keep.</p></div>
-<nav aria-label="Main"><a href="#intents">Intents</a><a href="#overview">Overview</a><a href="#references">References</a><a href="#about">About</a></nav></header>
+<nav aria-label="Main"><a href="#intents">Intents</a><a href="#review">Review</a><a href="#overview">Overview</a><a href="#references">References</a><a href="#about">About</a></nav></header>
 <main>
 <div id="view-intents">
 <section class="dash" aria-label="Dashboard" aria-live="polite">
@@ -33,6 +33,38 @@
 <p id="resetStatus" class="note" role="status" aria-live="polite"></p>
 <p id="emptyState" class="empty">No intents yet. An intent is a written outcome plus its inputs, outputs, constraints, success criteria, and stop condition. The form above starts with an example. Change it or save it as is with "Save intent".</p>
 <ul id="intentList" class="list"></ul>
+</section>
+</div>
+
+<div id="view-review" hidden>
+<section class="panel">
+<h2>Review</h2>
+<p class="lede">Record what you know about an intent, and how you know it. Every claim is observed, inferred, or assumed.</p>
+<p id="reviewEmpty" class="empty" hidden>No intents yet. Save an intent first, then come back to record evidence for it. <a href="#intents">Go to Intents.</a></p>
+<div id="reviewBody">
+<label for="reviewIntent">Intent</label>
+<select id="reviewIntent"></select>
+<h3>Evidence</h3>
+<p id="epistemic" class="note"></p>
+<p id="evidenceEmpty" class="empty" hidden>No evidence yet. Add a claim below and label it observed, inferred, or assumed.</p>
+<ul id="evidenceList" class="claims"></ul>
+<h4>Add a claim</h4>
+<form id="evidenceForm" novalidate>
+<label for="claimText">Claim</label>
+<textarea id="claimText" rows="2"></textarea>
+<label for="claimLabel">How do you know? <span class="req">(required)</span></label>
+<select id="claimLabel"><option value="">Choose one</option><option value="observed">Observed: I saw it directly</option><option value="inferred">Inferred: I reasoned it from what I saw</option><option value="assumed">Assumed: not yet checked</option></select>
+<label for="claimSource">Source</label>
+<input id="claimSource" type="text" autocomplete="off">
+<p id="evidenceError" class="error" role="alert" hidden></p>
+<div class="actions"><button type="submit" id="claimSave">Save claim</button></div>
+</form>
+<p id="evidenceStatus" class="status" role="status" aria-live="polite"></p>
+<h3>Reviews</h3>
+<p id="reviewsEmpty" class="empty" hidden>No reviews of this intent yet.</p>
+<ul id="reviewList" class="claims"></ul>
+</div>
+<p class="cta"><a href="#overview">Next: see the whole picture on Overview.</a></p>
 </section>
 </div>
 

@@ -57,6 +57,7 @@ function render(){
   const intents=state.intents;
   renderDashboard(intents);
   renderOverview(state);
+  renderReview(state);
   listEl.textContent='';
   emptyEl.hidden=intents.length>0;
   intents.forEach(item=>{
@@ -132,9 +133,8 @@ form.addEventListener('submit',e=>{
   form.elements.outcome.focus();
   announce(vanished?'The intent you were editing no longer exists, so this was saved as a new intent: '+shorten(values.outcome)+' ('+intents.length+' saved).':wasEditing?'Updated: '+shorten(values.outcome)+'.':'Saved: '+shorten(values.outcome)+' ('+intents.length+' saved).');
 });
-render();
 
-const VIEWS=['intents','overview','references','about'];
+const VIEWS=['intents','review','overview','references','about'];
 function currentView(){
   const name=location.hash.replace('#','');
   return VIEWS.includes(name)?name:'intents';
@@ -285,3 +285,108 @@ document.getElementById('resetConfirm').addEventListener('click',()=>{
 
 /* ---- Another tab changed the stored data: show it here too ---- */
 window.addEventListener('storage',e=>{if(e.key===KEY||e.key===null)render();});
+
+/* ---- Review view: evidence labels ---- */
+let reviewIntentId=null;
+const LABEL_BADGE={observed:'found',inferred:'suggested',assumed:'missing'};
+const LABEL_TEXT={observed:'Observed',inferred:'Inferred',assumed:'Assumed'};
+const evidenceStatus=document.getElementById('evidenceStatus');
+function badgeEl(label){
+  const b=document.createElement('span');
+  b.className='badge '+LABEL_BADGE[label];
+  b.textContent=LABEL_TEXT[label];
+  return b;
+}
+function line(tag,cls,text){
+  const el=document.createElement(tag);
+  if(cls)el.className=cls;
+  el.textContent=text;
+  return el;
+}
+function renderReview(state){
+  const intents=state.intents;
+  const none=intents.length===0;
+  document.getElementById('reviewEmpty').hidden=!none;
+  document.getElementById('reviewBody').hidden=none;
+  if(none){reviewIntentId=null;return;}
+  if(!intents.some(i=>String(i.id)===String(reviewIntentId)))reviewIntentId=intents[0].id;
+  const sel=document.getElementById('reviewIntent');
+  sel.textContent='';
+  intents.forEach(i=>{const o=document.createElement('option');o.value=String(i.id);o.textContent=shorten(i.outcome);sel.appendChild(o);});
+  sel.value=String(reviewIntentId);
+  const ev=state.evidence.filter(e=>String(e.intentId)===String(reviewIntentId));
+  document.getElementById('epistemic').textContent=epistemicSummary(ev);
+  document.getElementById('evidenceEmpty').hidden=ev.length>0;
+  const list=document.getElementById('evidenceList');
+  list.textContent='';
+  ev.forEach(e=>{
+    const li=document.createElement('li');
+    li.className='claim';
+    const head=document.createElement('div');
+    head.className='claimhead';
+    const change=document.createElement('select');
+    change.setAttribute('aria-label','Change label of claim: '+shorten(e.claim));
+    LABELS.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=LABEL_TEXT[l];if(l===e.label)o.selected=true;change.appendChild(o);});
+    change.addEventListener('change',()=>changeLabel(e.id,change.value));
+    head.append(badgeEl(e.label),change);
+    li.append(head,line('p','claimtext',e.claim));
+    if(e.source)li.appendChild(line('p','note','Source: '+e.source));
+    list.appendChild(li);
+  });
+  const rv=state.reviews.filter(r=>String(r.intentId)===String(reviewIntentId));
+  document.getElementById('reviewsEmpty').hidden=rv.length>0;
+  const rl=document.getElementById('reviewList');
+  rl.textContent='';
+  rv.forEach(r=>{
+    const li=document.createElement('li');
+    li.className='claim';
+    const n=s=>r.criteria.filter(c=>c.status===s).length;
+    li.appendChild(line('p','claimtext','Review of '+(r.created||'').slice(0,10)+': '+n('met')+' met, '+n('unmet')+' unmet, '+n('untested')+' untested.'));
+    const crit=document.createElement('ul');
+    r.criteria.forEach(c=>crit.appendChild(line('li','',c.status+': '+c.text)));
+    li.appendChild(crit);
+    (r.findings||[]).forEach(f=>{const p=document.createElement('p');p.append(badgeEl(f.label),document.createTextNode(' '+f.text));li.appendChild(p);});
+    if(r.notChecked)li.appendChild(line('p','note','Not checked: '+r.notChecked));
+    if(r.summary)li.appendChild(line('p','',r.summary));
+    rl.appendChild(li);
+  });
+}
+function evidenceMessage(text){
+  evidenceStatus.textContent=text;
+  evidenceStatus.scrollIntoView({block:'nearest'});
+}
+function changeLabel(id,label){
+  const state=loadState();
+  const at=state.evidence.findIndex(e=>e.id===id);
+  if(at<0)return;
+  const evidence=state.evidence.slice();
+  evidence[at]=Object.assign({},evidence[at],{label});
+  if(!saveState(Object.assign({},state,{evidence}))){evidenceMessage(storageProblem('change the label'));render();return;}
+  render();
+  evidenceMessage('Label changed to '+label+': '+shorten(evidence[at].claim)+'.');
+}
+document.getElementById('reviewIntent').addEventListener('change',e=>{reviewIntentId=e.target.value;render();});
+document.getElementById('evidenceForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const claim=document.getElementById('claimText').value.trim();
+  const label=document.getElementById('claimLabel').value;
+  const err=document.getElementById('evidenceError');
+  if(!claim||!label){
+    err.textContent=!claim?'Write the claim first.':'Choose whether this claim is observed, inferred, or assumed.';
+    err.hidden=false;
+    (!claim?document.getElementById('claimText'):document.getElementById('claimLabel')).focus();
+    return;
+  }
+  err.hidden=true;
+  const state=loadState();
+  const now=Date.now();
+  const record=makeEvidence({intentId:state.intents.find(i=>String(i.id)===String(reviewIntentId)).id,claim,label,source:document.getElementById('claimSource').value},{id:nextEvidenceId(state.evidence,now),now});
+  if(!saveState(Object.assign({},state,{evidence:state.evidence.concat(record)}))){err.textContent=storageProblem('save');err.hidden=false;return;}
+  document.getElementById('evidenceForm').reset();
+  render();
+  document.getElementById('claimText').focus();
+  evidenceMessage('Evidence saved: '+shorten(claim)+' ('+LABEL_TEXT[label]+').');
+});
+
+/* ---- First render: everything above is defined by now ---- */
+render();

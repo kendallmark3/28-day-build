@@ -13,6 +13,8 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - `app/logic.js`: the pure functions for the model (state, records, validation)
 - `app/app.js` reading and writing the model, and an Overview view showing what is stored
 - Sample data covering every record type, restored by "Reset to sample data"
+- A Review view with an intent selector, that intent's evidence and reviews, and a form to add a labelled claim
+- Review records whose findings are each labelled observed, inferred, or assumed
 
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
@@ -41,6 +43,16 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - Opening or leaving a view closes any open dialog
 - A save in another browser tab shows in this tab without a reload
 - Updating an intent that no longer exists saves it as a new intent and says so, instead of reporting a false update
+- A Review item in the navigation opens a view with an intent selector, that intent's evidence list, a form to add a claim (claim, label, source), and that intent's reviews
+- Every evidence record, and every finding in a review, shows one of the words Observed, Inferred, or Assumed in a badge
+- Saving a claim needs a claim and a label. Without a label the message says to choose observed, inferred, or assumed, and nothing is saved. A saved claim appears with its label, is stored as a valid evidence record for that intent, and the status message reads "Evidence saved: <claim> (<Label>)."
+- Changing a claim's label updates the stored record and its badge, and the status message says so
+- A summary line gives the number of claims per label and, when any are assumed, how many assumed claims still need confirming
+- With no intents the Review view says to save an intent first and links to Intents. With an intent but no evidence it says what to add and to label each claim
+- Choosing another intent shows only that intent's evidence and reviews. Evidence survives a reload, is shown as text, and the view has no horizontal scroll at 375px
+- A review whose finding has a missing or unknown label is dropped and counted by `normalizeState`. The sample review has findings labelled observed, inferred, and assumed
+- The Review view ends with a link to the next action
+- With no saved intents, the reset confirmation says that any evidence, reviews, capability uses, and progress are replaced
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record
