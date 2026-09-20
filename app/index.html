@@ -107,7 +107,23 @@
 <section class="panel">
 <h2>Capabilities</h2>
 <p class="lede">Work you repeat, packaged so it can be reused. Each one has a purpose, a procedure, an output, checks, an owner, and a version.</p>
+<h3>The ladder</h3>
+<p class="note">Reusable work matures from a prompt to a business capability. Classify each item by the rung it has reached.</p>
+<ol id="ladder" class="flow"></ol>
+<h3>Your capabilities</h3>
 <ul id="capList" class="claims"></ul>
+<p id="capStatus" class="status" role="status" aria-live="polite"></p>
+<h3>Add an item to classify</h3>
+<form id="capForm" novalidate>
+<label for="capName">Name <span class="req">(required)</span></label>
+<input id="capName" type="text" autocomplete="off">
+<label for="capLevel">Rung</label>
+<select id="capLevel"><option value="prompt">Prompt</option><option value="skill">Skill</option><option value="trigger">Trigger</option><option value="workflow">Workflow</option><option value="business">Business capability</option></select>
+<label for="capPurpose">Purpose</label>
+<textarea id="capPurpose" rows="2"></textarea>
+<p id="capError" class="error" role="alert" hidden></p>
+<div class="actions"><button type="submit" id="capAdd">Add item</button></div>
+</form>
 <p class="cta"><a href="#overview">Next: see how capabilities fit in the whole picture on Overview.</a></p>
 </section>
 </div>

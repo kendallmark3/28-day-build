@@ -21,6 +21,7 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - A "How it fits together" panel on the Overview view showing the six-stage operating model with live counts
 - A Capabilities view listing packaged capabilities as cards (purpose, procedure, output, checks, owner, version, source file, and where to use it)
 - A Sample usage section on each built-in capability card, and a "Record a review" form on the Review view
+- A capability ladder, classification by rung, an "Add an item to classify" form, and recorded uses with a promotion rule, on the Capabilities view
 
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
@@ -94,6 +95,13 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - Recording without "Not checked" is refused with a message and nothing is stored. A recorded review is stored as a valid review for that intent with the chosen statuses and findings labelled by the box they were entered in, is listed under Reviews, and the status message reads "Review saved: N met, M unmet, K untested."
 - An intent with no success criteria shows a message that there is nothing to review yet, and no form
 - Recording a review turns the review minimum of a medium-consequence intent to Met without a reload. Hostile text is shown as text, long text wraps at 375px with no horizontal scroll, and the form works by keyboard
+- The Capabilities view opens with a ladder of five rungs in order (Prompt, Skill, Trigger, Workflow, Business capability), each with a one-line meaning and the number of items at that rung. The counts match the stored capabilities and change when an item is classified or added
+- Each capability card has a level selector; changing it saves the level, updates the card's badge and the ladder, and says so in a polite status region
+- An "Add an item to classify" form takes a name (required), a rung, and a purpose, and creates a stored, valid capability that is not built in, has no uses, and is not promoted; it appears in the list and the ladder. An empty name is refused with a message
+- Each card shows its successful and unsuccessful use counts and has buttons to record a successful use and an unsuccessful use; each stores a use with a date and updates the counts
+- "Promote" is refused until a capability has at least 2 recorded successful uses, and the message says how many more are needed and cites business rule 5. Unsuccessful uses do not count. With 2 successful uses it promotes, the card shows Promoted, and the Overview counts it
+- `ladderCounts`, `promotionStatus`, `withUse`, and `tryPromote` in `app/logic.js` are pure, do not change their input, and agree with each other. The sample data shows the rule: the intent check promoted with 2 uses, the review skill needing 1 more
+- Capability names and purposes are shown as text, the view has no horizontal scroll at 375px, its controls work by keyboard, and it has exactly one filled button
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record

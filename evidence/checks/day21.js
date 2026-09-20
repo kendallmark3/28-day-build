@@ -41,7 +41,7 @@ require('./h.js')('day21',async c=>{
   const endLink=await page.evaluate(()=>{const ch=[...document.querySelector('#view-capabilities .panel').children];const l=ch[ch.length-1];return l.querySelector('a[href="#overview"]')?l.textContent:'';});
   rec('K5a the view ends with a link to the next action',/^Next: see how capabilities fit/.test(endLink),endLink);
   await c.view('capabilities');
-  const tab=[];for(let i=0;i<14&&tab.length<4;i++){await page.keyboard.press('Tab');const r=await page.evaluate(()=>{const e=document.activeElement;const s=getComputedStyle(e);return {in:!!e.closest('#capList'),t:e.textContent,ol:s.outlineStyle!=='none'&&parseFloat(s.outlineWidth)>0};});if(r.in)tab.push(r);}
+  const tab=[];for(let i=0;i<30&&tab.length<4;i++){await page.keyboard.press('Tab');const r=await page.evaluate(()=>{const e=document.activeElement;const s=getComputedStyle(e);return {in:!!e.closest('#capList')&&e.tagName==='A',t:e.textContent,ol:s.outlineStyle!=='none'&&parseFloat(s.outlineWidth)>0};});if(r.in)tab.push(r);}
   rec('K5b the four links on the cards are reachable by keyboard in order (file, use, file, use), each with a visible outline',tab.length===4&&tab.every(x=>x.ol)&&/skills\/intent-check\.md/.test(tab[0].t)&&/Check a saved intent/.test(tab[1].t)&&/skills\/evidence-first-review\.md/.test(tab[2].t),JSON.stringify(tab.map(x=>x.t)));
   await c.start(null,375,812,'#capabilities');
   const ow=await page.evaluate(()=>({sw:document.documentElement.scrollWidth,cw:document.documentElement.clientWidth}));

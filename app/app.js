@@ -569,7 +569,35 @@ document.getElementById('reviewForm').addEventListener('submit',e=>{
 /* ---- Capabilities view ---- */
 const REPO_URL='https://github.com/kendallmark3/28-day-build/blob/main/';
 const USE_LINKS={'cap-intent-check':{href:'#review',text:'Check a saved intent on Review'},'cap-evidence-review':{href:'#review',text:'Review an intent on Review'}};
+function capMessage(text){
+  const el=document.getElementById('capStatus');
+  el.textContent=text;
+  el.scrollIntoView({block:'nearest'});
+}
+function changeCapability(id,change,failVerb){
+  const state=loadState();
+  const at=state.capabilities.findIndex(c=>c.id===id);
+  if(at<0)return null;
+  const capabilities=state.capabilities.slice();
+  capabilities[at]=change(capabilities[at]);
+  if(!saveState(Object.assign({},state,{capabilities}))){capMessage(storageProblem(failVerb));render();return null;}
+  render();
+  return capabilities[at];
+}
+function renderLadder(capabilities){
+  const counts=ladderCounts(capabilities);
+  const ol=document.getElementById('ladder');
+  ol.textContent='';
+  LADDER.forEach(r=>{
+    const li=document.createElement('li');
+    li.dataset.rung=r.id;
+    const n=counts[r.id];
+    li.append(line('h4','',LEVEL_NAMES[r.id]),line('p','',r.what),line('p','flowcount',n+(n===1?' item':' items')));
+    ol.appendChild(li);
+  });
+}
 function renderCapabilities(state){
+  renderLadder(state.capabilities);
   const list=document.getElementById('capList');
   list.textContent='';
   state.capabilities.forEach(cap=>{
@@ -582,6 +610,7 @@ function renderCapabilities(state){
     b.className='badge info';
     b.textContent=LEVEL_NAMES[cap.level]||cap.level;
     head.append(line('h3','capname',cap.name),b);
+    if(cap.promoted){const pb=document.createElement('span');pb.className='badge found';pb.textContent='Promoted';head.appendChild(pb);}
     li.append(head,line('p','claimtext',cap.purpose));
     if(cap.procedure){
       li.appendChild(line('h4','','Procedure'));
@@ -607,9 +636,47 @@ function renderCapabilities(state){
       links.append(document.createTextNode(cap.file?' · ':''),u);
     }
     li.appendChild(links);
+    const ps=promotionStatus(cap);
+    li.appendChild(line('p','uses','Successful uses: '+ps.successes+'. Unsuccessful: '+ps.failures+'. '+(cap.promoted?'Promoted.':ps.missing>0?'Promotion needs '+ps.missing+' more successful '+(ps.missing===1?'use.':'uses.'):'Ready to promote.')));
+    const lvlLabel=document.createElement('label');
+    lvlLabel.textContent='Rung';
+    const lvl=document.createElement('select');
+    lvl.setAttribute('aria-label','Rung of '+cap.name);
+    LEVELS.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=LEVEL_NAMES[l];if(l===cap.level)o.selected=true;lvl.appendChild(o);});
+    lvl.addEventListener('change',()=>{const c=changeCapability(cap.id,x=>Object.assign({},x,{level:lvl.value}),'classify it');if(c)capMessage('Classified as '+LEVEL_NAMES[c.level]+': '+shorten(c.name)+'.');});
+    lvlLabel.appendChild(lvl);
+    const act=document.createElement('div');
+    act.className='actions';
+    const btn=(text,fn)=>{const x=document.createElement('button');x.type='button';x.className='secondary small';x.textContent=text;x.setAttribute('aria-label',text+': '+cap.name);x.addEventListener('click',fn);return x;};
+    act.append(
+      btn('Record a successful use',()=>{const c=changeCapability(cap.id,x=>withUse(x,true,Date.now()),'record the use');if(c)capMessage('Successful use recorded: '+shorten(c.name)+' ('+promotionStatus(c).successes+' successful).');}),
+      btn('Record an unsuccessful use',()=>{const c=changeCapability(cap.id,x=>withUse(x,false,Date.now()),'record the use');if(c)capMessage('Unsuccessful use recorded: '+shorten(c.name)+'. It does not count toward promotion.');}),
+      btn('Promote',()=>{
+        const r=tryPromote(cap);
+        if(!r.ok){capMessage(r.message);return;}
+        const c=changeCapability(cap.id,x=>tryPromote(x).cap,'promote it');
+        if(c)capMessage(r.message);
+      }));
+    li.append(lvlLabel,act);
     list.appendChild(li);
   });
 }
+
+document.getElementById('capForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const err=document.getElementById('capError');
+  const name=document.getElementById('capName').value.trim();
+  if(!name){err.textContent='Give the item a name first.';err.hidden=false;document.getElementById('capName').focus();return;}
+  err.hidden=true;
+  const state=loadState();
+  const now=Date.now();
+  const cap=makeCapability({name,level:document.getElementById('capLevel').value,purpose:document.getElementById('capPurpose').value},{id:nextCapabilityId(state.capabilities,now),now});
+  if(!saveState(Object.assign({},state,{capabilities:state.capabilities.concat(cap)}))){err.textContent=storageProblem('save');err.hidden=false;return;}
+  document.getElementById('capForm').reset();
+  render();
+  capMessage('Added: '+shorten(cap.name)+' ('+LEVEL_NAMES[cap.level]+').');
+  document.getElementById('capName').focus();
+});
 
 /* ---- Failures: banner actions and unexpected errors ---- */
 document.getElementById('problemDownload').addEventListener('click',()=>{

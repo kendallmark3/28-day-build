@@ -524,3 +524,37 @@ function sampleUsage(capId){
   }
   return '';
 }
+
+// The capability ladder, and the rule for promotion (business rule 5: only after repeated successful use).
+const LADDER=[
+  {id:'prompt',what:'A request you typed once.'},
+  {id:'skill',what:'A written procedure you can reuse.'},
+  {id:'trigger',what:'A skill that starts when a condition is met.'},
+  {id:'workflow',what:'Several skills and triggers chained to finish a job.'},
+  {id:'business',what:'A workflow the organisation relies on and owns.'}
+];
+function ladderCounts(capabilities){
+  const c={};
+  LEVELS.forEach(l=>{c[l]=0;});
+  capabilities.forEach(x=>{if(c[x.level]!==undefined)c[x.level]++;});
+  return c;
+}
+function promotionStatus(cap){
+  const successes=cap.uses.filter(u=>u.success).length;
+  const missing=Math.max(0,PROMOTE_AFTER-successes);
+  return {successes,failures:cap.uses.length-successes,needed:PROMOTE_AFTER,missing,can:missing===0&&!cap.promoted};
+}
+function withUse(cap,success,now){
+  return Object.assign({},cap,{uses:cap.uses.concat({date:iso(now),success:success===true})});
+}
+function tryPromote(cap){
+  if(cap.promoted)return {cap,ok:false,message:'Already promoted.'};
+  const s=promotionStatus(cap);
+  if(s.missing>0)return {cap,ok:false,message:'Promotion needs '+PROMOTE_AFTER+' successful uses. '+s.missing+' more '+(s.missing===1?'use is':'uses are')+' needed. Source: context/business-rules.md, rule 5.'};
+  return {cap:Object.assign({},cap,{promoted:true}),ok:true,message:'Promoted: '+clip(cap.name,60)+'.'};
+}
+function nextCapabilityId(capabilities,now){
+  let n=0;
+  while(capabilities.some(c=>c.id==='cap-user-'+now+'-'+n))n++;
+  return 'cap-user-'+now+'-'+n;
+}
