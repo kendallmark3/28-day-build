@@ -487,7 +487,7 @@ function flowStages(state,contextCount){
   return [
     {id:'intent',name:'Intent',what:'Write what you want, and how you will know it is done.',count:state.intents.length,rest:' saved, '+ready+' ready',view:'intents'},
     {id:'context',name:'Context',what:'Keep the rules and terms the work follows in files.',count:contextCount,rest:' '+one(contextCount,'file')+' the app follows',view:'references'},
-    {id:'build',name:'Build',what:'Do the work the intent asks for, and nothing more.',count:days,rest:' of 28 days done',view:null},
+    {id:'build',name:'Build',what:'Do the work the intent asks for, and nothing more.',count:days,rest:' of 28 days done',view:'progress'},
     {id:'evidence',name:'Evidence',what:'Record what happened, and label each claim.',count:state.evidence.length,rest:' '+one(state.evidence.length,'claim')+', '+assumed+' assumed',view:'review'},
     {id:'review',name:'Review',what:'Check the result against the intent.',count:state.reviews.length,rest:' '+one(state.reviews.length,'review')+' recorded',view:'review'},
     {id:'capability',name:'Capability',what:'Keep what you repeat, once it has worked more than once.',count:promoted,rest:' of '+state.capabilities.length+' promoted',view:'capabilities'}
@@ -557,4 +557,17 @@ function nextCapabilityId(capabilities,now){
   let n=0;
   while(capabilities.some(c=>c.id==='cap-user-'+now+'-'+n))n++;
   return 'cap-user-'+now+'-'+n;
+}
+
+// Outcome metrics: four counts that show results, not activity. Nothing here counts views, clicks, time, or saves.
+function metrics(state){
+  const ready=state.intents.filter(i=>checkIntent(i).ready).length;
+  const promoted=state.capabilities.filter(c=>c.promoted).length;
+  const days=Object.keys((state.progress&&state.progress.days)||{}).length;
+  return [
+    {id:'ready',label:'Intents ready',value:ready,of:state.intents.length,why:'A ready intent can be built and checked without guessing.'},
+    {id:'reviews',label:'Reviews completed',value:state.reviews.length,of:null,why:'A review is a result checked against its intent.'},
+    {id:'promoted',label:'Capabilities promoted',value:promoted,of:state.capabilities.length,why:'Promoted work has been reused successfully more than once.'},
+    {id:'progress',label:'28-day progress',value:days,of:28,why:'The days of the plan you have finished.'}
+  ];
 }

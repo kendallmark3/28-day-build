@@ -27,3 +27,4 @@ button.danger{background:#a4200f}.note:empty{display:none}#savedTitle:focus{outl
 fieldset{border:1px solid #e8dfd4;border-radius:12px;padding:8px 12px;margin:10px 0}legend{font-weight:700;padding:0 6px}.crow{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin:8px 0}.crow label{flex:1 1 220px;margin:0;font-weight:400;overflow-wrap:anywhere}.sample{background:#f2ece3;border-radius:10px;padding:8px 12px;overflow-wrap:anywhere}
 .claim{overflow-wrap:anywhere}.crow label{min-width:0}
 .uses{margin:8px 0;font-weight:700}.claim .actions{margin-top:8px}.claim label select{margin-left:8px}
+.dayslist{padding-left:0;list-style:none;margin:10px 0}.dayslist li{margin:6px 0}.dayslist label{display:flex;gap:8px;align-items:center;font-weight:400;margin:0;min-height:40px}.dayslist input{width:20px;height:20px;flex:none}@media(min-width:700px){.dayslist{columns:2;column-gap:24px}}.stats-grid .note{font-size:.85rem}

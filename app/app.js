@@ -91,14 +91,55 @@ function renderFlow(state){
     if(st.view){
       const a=document.createElement('a');
       a.href='#'+st.view;
-      a.textContent='Go to '+({intents:'Intents',references:'References',review:'Review',capabilities:'Capabilities'}[st.view]);
+      a.textContent='Go to '+({intents:'Intents',references:'References',review:'Review',capabilities:'Capabilities',progress:'Progress'}[st.view]);
       li.appendChild(a);
     }
     list.appendChild(li);
   });
 }
+function renderMetrics(state){
+  const ul=document.getElementById('metrics');
+  ul.textContent='';
+  metrics(state).forEach(m=>{
+    const li=document.createElement('li');
+    li.dataset.metric=m.id;
+    const n=document.createElement('strong');
+    n.textContent=m.value+(m.of===null?'':' of '+m.of);
+    li.append(n,line('span','',m.label),line('span','note',m.why));
+    ul.appendChild(li);
+  });
+}
+function renderDays(state){
+  const ol=document.getElementById('days');
+  ol.textContent='';
+  const done=(state.progress&&state.progress.days)||{};
+  DAY_TITLES.forEach((title,i)=>{
+    const d=i+1;
+    const li=document.createElement('li');
+    const label=document.createElement('label');
+    const box=document.createElement('input');
+    box.type='checkbox';
+    box.checked=done[d]===true;
+    box.dataset.day=String(d);
+    box.addEventListener('change',()=>toggleDay(d,box.checked));
+    label.append(box,document.createTextNode(' Day '+d+': '+title));
+    li.appendChild(label);
+    ol.appendChild(li);
+  });
+}
+function toggleDay(d,on){
+  const state=loadState();
+  const days=Object.assign({},(state.progress&&state.progress.days)||{});
+  if(on)days[d]=true;else delete days[d];
+  const el=document.getElementById('progressStatus');
+  if(!saveState(Object.assign({},state,{progress:{days}}))){el.textContent=storageProblem('save');render();return;}
+  render();
+  el.textContent='Day '+d+(on?' marked done. ':' unmarked. ')+Object.keys(days).length+' of 28 days done.';
+}
 function renderOverview(state){
+  renderMetrics(state);
   renderFlow(state);
+  renderDays(state);
   const rows=[['Projects',state.projects.length],['Intents',state.intents.length],['Evidence records',state.evidence.length],['Reviews',state.reviews.length],['Capabilities',state.capabilities.length]];
   const el=document.getElementById('modelCounts');
   el.textContent='';
@@ -192,6 +233,7 @@ form.addEventListener('submit',e=>{
 const VIEWS=['intents','review','capabilities','overview','references','about'];
 function currentView(){
   const name=location.hash.replace('#','');
+  if(name==='progress')return 'overview';
   return VIEWS.includes(name)?name:'intents';
 }
 function showView(name,moveFocus){
@@ -207,6 +249,7 @@ function showView(name,moveFocus){
     heading.tabIndex=-1;
     heading.focus();
   }
+  if(location.hash==='#progress'){const p=document.getElementById('progress');if(p)p.scrollIntoView();}
 }
 window.addEventListener('hashchange',()=>showView(currentView(),true));
 showView(currentView(),false);

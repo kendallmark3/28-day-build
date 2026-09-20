@@ -22,6 +22,7 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - A Capabilities view listing packaged capabilities as cards (purpose, procedure, output, checks, owner, version, source file, and where to use it)
 - A Sample usage section on each built-in capability card, and a "Record a review" form on the Review view
 - A capability ladder, classification by rung, an "Add an item to classify" form, and recorded uses with a promotion rule, on the Capabilities view
+- An Outcomes panel on the Overview view with four outcome metrics, and a 28-day progress list
 
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
@@ -83,7 +84,7 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - "Reset to sample data" from an unreadable or invalid store gives a valid store and hides the banner. The banner is on every view, its buttons work by keyboard, it has no horizontal scroll at 375px, and it is absent (and the Save button position unchanged) when nothing is wrong
 - The Overview view has a "How it fits together" panel: an ordered list of six stages in the order Intent, Context, Build, Evidence, Review, Capability, each with a one-line description, a count, and a detail line, and a caption explaining that what is learned at Review sharpens the next intent
 - The counts read as sentences: "N saved, M ready" (Intent, by the readiness check); "N files the app follows" (Context, the files in the References view's Project context); "N of 28 days done" (Build, ticked days); "N claims, M assumed" (Evidence); "N reviews recorded" (Review); "N of M promoted" (Capability). They match the stored data and change without a reload after a save
-- Intent links to Intents, Context to References, Evidence and Review to Review, and Capability to Capabilities, and each link opens that view. Build shows no link
+- Intent links to Intents, Context to References, Evidence and Review to Review, Capability to Capabilities, and Build to the 28-day progress list, and each link opens that view
 - `flowStages(state, contextCount)` in `app/logic.js` is pure, returns the six stages in order, and gives zero counts for an empty project
 - The flow reads as a list, its arrows are hidden from assistive technology, its links are reachable by keyboard with a visible outline, and the stages stack in order, each wide enough to read without breaking words, with no horizontal scroll at 1280px or 375px. It uses no image, script, or external request
 - A Capabilities item in the navigation opens a view that lists each capability as a card with its name, its purpose, its procedure as an ordered list, its output, its checks, its owner and version, a link to its file in the project's repository, and a link to where it is used
@@ -102,6 +103,11 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - "Promote" is refused until a capability has at least 2 recorded successful uses, and the message says how many more are needed and cites business rule 5. Unsuccessful uses do not count. With 2 successful uses it promotes, the card shows Promoted, and the Overview counts it
 - `ladderCounts`, `promotionStatus`, `withUse`, and `tryPromote` in `app/logic.js` are pure, do not change their input, and agree with each other. The sample data shows the rule: the intent check promoted with 2 uses, the review skill needing 1 more
 - Capability names and purposes are shown as text, the view has no horizontal scroll at 375px, its controls work by keyboard, and it has exactly one filled button
+- The Overview view has an Outcomes panel with exactly four metrics, in this order: Intents ready, Reviews completed, Capabilities promoted, 28-day progress. Each shows a number (and "of N" where it applies) and one line on why it matters. A note says that page views, clicks, time spent, and number of saves are deliberately not measured, because they measure activity, not outcomes
+- `metrics(state)` in `app/logic.js` is pure and returns those four metrics; for an empty project they read 0 of 0, 0, 0 of 2, and 0 of 28. The values equal the stored data and the Overview flow (ready intents, reviews, promoted capabilities, ticked days), and change without a reload after a review is recorded, a capability promoted, a day ticked, or an intent saved
+- The 28-day list has 28 checkboxes labelled "Day N: <title>" (titles from the roadmap), checked from the stored progress; ticking or unticking one saves it, updates the metric and the flow's Build stage, and says so in a polite status region; it survives a reload; the sample data has days 1 to 8 ticked
+- The Overview flow's Build stage links to the progress list, and opening `#progress` shows the Overview scrolled to it
+- No code counts page views, clicks, time spent, or saves; the metrics panel has no filled button, works by keyboard, and has no horizontal scroll at 375px
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record
