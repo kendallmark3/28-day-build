@@ -314,6 +314,22 @@ function renderReview(state){
   sel.textContent='';
   intents.forEach(i=>{const o=document.createElement('option');o.value=String(i.id);o.textContent=shorten(i.outcome);sel.appendChild(o);});
   sel.value=String(reviewIntentId);
+  const chosen=intents.find(i=>String(i.id)===String(reviewIntentId));
+  const ready=checkIntent(chosen);
+  document.getElementById('readinessSummary').textContent='Readiness: '+ready.score+'%. '+(ready.ready?'Ready.':'Not ready yet.');
+  const rlist=document.getElementById('readinessList');
+  rlist.textContent='';
+  ready.checks.forEach(c=>{
+    const li=document.createElement('li');
+    li.className='claim';
+    const b=document.createElement('span');
+    b.className='badge '+(c.pass?'found':'missing');
+    b.textContent=c.pass?'Pass':'Fix';
+    li.append(b,document.createTextNode(' '+c.label+(c.required?' (required)':'')),line('p','claimtext',c.message),line('span','src','Source: '+c.source));
+    rlist.appendChild(li);
+  });
+  const todo=ready.checks.filter(c=>c.required&&!c.pass);
+  document.getElementById('readinessNext').textContent=todo.length?'Fix '+todo.length+' required '+(todo.length===1?'item':'items')+': '+todo.map(c=>c.label.toLowerCase()).join(', ')+'.':'All required checks pass. Record evidence below, then review the result.';
   const ev=state.evidence.filter(e=>String(e.intentId)===String(reviewIntentId));
   document.getElementById('epistemic').textContent=epistemicSummary(ev);
   document.getElementById('evidenceEmpty').hidden=ev.length>0;
@@ -365,6 +381,12 @@ function changeLabel(id,label){
   render();
   evidenceMessage('Label changed to '+label+': '+shorten(evidence[at].claim)+'.');
 }
+document.getElementById('editFromReview').addEventListener('click',()=>{
+  const chosen=load().find(i=>String(i.id)===String(reviewIntentId));
+  if(!chosen)return;
+  window.addEventListener('hashchange',()=>startEdit(chosen.id),{once:true});
+  location.hash='#intents';
+});
 document.getElementById('reviewIntent').addEventListener('change',e=>{reviewIntentId=e.target.value;render();});
 document.getElementById('evidenceForm').addEventListener('submit',e=>{
   e.preventDefault();

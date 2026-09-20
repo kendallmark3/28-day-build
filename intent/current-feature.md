@@ -15,6 +15,7 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - Sample data covering every record type, restored by "Reset to sample data"
 - A Review view with an intent selector, that intent's evidence and reviews, and a form to add a labelled claim
 - Review records whose findings are each labelled observed, inferred, or assumed
+- A readiness check (`checkIntent`) and a Readiness section on the Review view
 
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
@@ -53,6 +54,12 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - A review whose finding has a missing or unknown label is dropped and counted by `normalizeState`. The sample review has findings labelled observed, inferred, and assumed
 - The Review view ends with a link to the next action
 - With no saved intents, the reset confirmation says that any evidence, reviews, capability uses, and progress are replaced
+- `checkIntent(intent)` in `app/logic.js` returns eight checks (outcome, inputs, outputs, constraints, success criteria, stop condition present; every criterion checkable; no vague word in the outcome or stop condition), each with a pass flag, a message, and its source rule; a score of passed checks over eight, rounded; and a ready flag that is true only when outcome, constraints, success criteria, stop condition, and checkability pass
+- `checkIntent` returns the same result for the same intent, does not change its input, does not store anything, and does not crash on missing, null, or non-text fields
+- The example in `context/example-intent.md` and the first sample intent score 100 and are ready; the second sample scores 100; the draft sample scores 38 and is not ready
+- The Review view shows, for the selected intent, `Readiness: <score>%.` and `Ready.` or `Not ready yet.`, each check as Pass or Fix with its source rule, and a next step that says how many required items to fix and names them
+- A check that fails on success criteria names up to three criterion lines that cannot be marked pass or fail; a clarity failure names the vague words; text from the intent is shown as text
+- "Edit this intent" on the Review view opens that intent for editing in the Intents view; after updating it, the Review view shows the new score
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record

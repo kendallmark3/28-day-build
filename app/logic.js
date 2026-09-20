@@ -400,3 +400,34 @@ function nextEvidenceId(evidence,now){
   while(evidence.some(e=>e.id==='ev-'+now+'-'+n))n++;
   return 'ev-'+now+'-'+n;
 }
+
+// Readiness: eight deterministic checks. Nothing is stored; the score is worked out from the intent each time.
+const CHECK_RULES={
+  outcome:'context/business-rules.md, rule 1',inputs:'context/glossary.md, Inputs',outputs:'context/glossary.md, Outputs',
+  constraints:'context/business-rules.md, rule 3',criteria:'context/business-rules.md, rule 2',stop:'context/business-rules.md, rule 3',
+  checkable:'context/business-rules.md, rule 2',clear:'context/business-rules.md, rule 2'
+};
+const REQUIRED_CHECKS=['outcome','constraints','criteria','stop','checkable'];
+function checkIntent(intent){
+  const i=intent&&typeof intent==='object'?intent:{};
+  const t=k=>(typeof i[k]==='string'?i[k]:(i[k]==null?'':String(i[k]))).trim();
+  const lines=t('criteria').split('\n').map(l=>l.trim()).filter(Boolean);
+  const bad=lines.filter(l=>!isCheckable(l));
+  const vague=[...new Set(findVague(t('outcome')+' '+t('stop')))];
+  const quote=l=>'"'+(l.length>60?l.slice(0,57)+'…':l)+'"';
+  const has=(k,label,fix)=>({id:k,label,pass:t(k)!=='',message:t(k)!==''?'Present.':fix});
+  const checks=[
+    has('outcome','Outcome','Say what will be true when this is done, and why it matters.'),
+    has('inputs','Inputs','Name what may be used: data, files, links, or systems.'),
+    has('outputs','Outputs','Name what will exist when this is done, and where.'),
+    has('constraints','Constraints','Add at least one boundary that must hold.'),
+    has('criteria','Success criteria','Add success criteria that someone can mark pass or fail.'),
+    has('stop','Stop condition','Say exactly when the work is finished.'),
+    {id:'checkable',label:'Every criterion can be checked',pass:lines.length>0&&bad.length===0,
+     message:lines.length===0?'Add success criteria first.':bad.length===0?'Every criterion can be marked pass or fail.':'Cannot be marked pass or fail as written: '+bad.slice(0,3).map(quote).join('; ')+(bad.length>3?' and '+(bad.length-3)+' more':'')+'.'},
+    {id:'clear',label:'No vague words in the outcome or stop condition',pass:vague.length===0,
+     message:vague.length===0?'No vague words found.':'Vague words: '+vague.map(w=>'"'+w+'"').join(', ')+'. Replace each with a check someone can perform.'}
+  ].map(c=>Object.assign(c,{required:REQUIRED_CHECKS.includes(c.id),source:CHECK_RULES[c.id]}));
+  const passed=checks.filter(c=>c.pass).length;
+  return {checks,score:Math.round(100*passed/checks.length),ready:checks.every(c=>!c.required||c.pass)};
+}
