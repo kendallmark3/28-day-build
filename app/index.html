@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IntentWorkbench</title><link rel="icon" href="data:,"><link rel="stylesheet" href="styles.css"></head><body>
 <header><div><span class="eyebrow">28-DAY BUILD</span><h1>IntentWorkbench</h1><p>Turn one-off AI work into something your team can keep.</p></div>
-<nav aria-label="Main"><a href="#intents">Intents</a><a href="#references">References</a><a href="#about">About</a></nav></header>
+<nav aria-label="Main"><a href="#intents">Intents</a><a href="#overview">Overview</a><a href="#references">References</a><a href="#about">About</a></nav></header>
 <main>
 <div id="view-intents">
 <section class="dash" aria-label="Dashboard" aria-live="polite">
@@ -33,6 +33,16 @@
 <p id="resetStatus" class="note" role="status" aria-live="polite"></p>
 <p id="emptyState" class="empty">No intents yet. An intent is a written outcome plus its inputs, outputs, constraints, success criteria, and stop condition. The form above starts with an example. Change it or save it as is with "Save intent".</p>
 <ul id="intentList" class="list"></ul>
+</section>
+</div>
+
+<div id="view-overview" hidden>
+<section class="panel">
+<h2>Overview</h2>
+<p class="lede">What your work is made of, and what is stored in this browser.</p>
+<h3>Data model</h3>
+<p class="note">Counts of each kind of record. Evidence and reviews belong to one intent. Capabilities stand alone. Projects group intents.</p>
+<ul id="modelCounts" class="stats-grid"></ul>
 </section>
 </div>
 
@@ -149,4 +159,5 @@
 <div class="actions"><button type="button" id="jiraDownload">Download intent file</button><button type="button" id="jiraUse" class="secondary">Use in form</button><button type="button" id="jiraBack" class="secondary">Back to story</button><button type="button" id="jiraClose2" class="secondary">Close</button></div>
 </div>
 </dialog>
+<script src="logic.js"></script>
 <script src="app.js"></script></body></html>

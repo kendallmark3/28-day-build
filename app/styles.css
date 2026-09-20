@@ -17,3 +17,4 @@ button.danger{background:#a4200f}.note:empty{display:none}#savedTitle:focus{outl
 .status{max-width:720px;margin:0 auto 10px;padding:8px 14px;border-radius:12px;background:#e3f2e5;color:#1c5a2a;border:1px solid #1c5a2a;font-weight:700}.status:empty{display:none}.cta{margin-top:22px;font-weight:700}
 .status{scroll-margin:12px}#submitBtn{scroll-margin-bottom:12px}
 .status,.note{overflow-wrap:anywhere}
+.stats-grid{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-wrap:wrap;gap:10px}.stats-grid li{flex:1 1 130px;border:1px solid #e8dfd4;border-radius:14px;padding:10px 14px;display:flex;flex-direction:column}.stats-grid strong{font-size:1.8rem;line-height:1.1}.stats-grid span{color:#3a4550;font-size:.9rem}
