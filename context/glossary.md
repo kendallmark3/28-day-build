@@ -9,3 +9,25 @@
 - **Evidence**: information used to support a conclusion.
 - **Capability**: reusable, governed way of performing useful work.
 - **Guardrail**: a control sized to the consequence of failure.
+- **Intent check**: reading an intent before building it, to find ambiguity, missing pieces, contradictions, uncheckable criteria, and a missing stop condition. See `skills/intent-check.md`.
+- **Progressive intent**: working in rounds, where the evidence from one result decides the next, sharper intent.
+- **Observed / inferred / assumed**: the three labels for an evidence claim. Observed was directly seen, inferred was reasoned from observations, assumed is not yet verified.
+- **Ready**: an intent with an outcome, at least one constraint, and a stop condition (business rules 1 and 3).
+- **Dashboard**: the summary at the top of the Intents view: intents saved, intents missing a constraint or stop condition, and the next step.
+- **Jira story**: the ticket text a user pastes into the app to start an intent.
+
+## Labels on a filled-in intent part
+- **From your story**: the text was found in the pasted story.
+- **Suggested**: the app filled the part in from other parts of the story, and the user should confirm it.
+- **Not found**: nothing in the story could be placed in this part.
+
+## Tags on Jira story notes
+- **Security**: the story appears to contain a secret or credential.
+- **Missing**: a part of the intent is absent, or was suggested by the app and needs confirming.
+- **Uncheckable**: a success criterion cannot be judged pass or fail as written.
+- **Ambiguity**: a vague word that different people would read differently.
+- **Stop**: there is no stop condition, or one was suggested.
+- **Scope**: nothing says what is out of scope.
+- **Size**: the story looks too large, or like several stories in one.
+- **Consequence**: the story touches something where a mistake is costly, so approval should be named.
+- **Limits**: what the rule-based check cannot judge.

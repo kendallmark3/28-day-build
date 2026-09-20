@@ -283,37 +283,37 @@ function analyzeStory(raw){
 
   // notes: the intent-check questions, most important first
   const notes=[];
-  const add=(tag,msg)=>notes.push({tag,text:msg});
+  const add=(tag,msg,source)=>notes.push({tag,text:msg,source:source||''});
   const secret=text.match(SECRET_RE);
-  if(secret)add('Security','This story appears to contain a secret or credential ("'+secret[0].slice(0,40)+'"). Remove it from the story and from anything you share. Keep credentials out of intent files.');
+  if(secret)add('Security','This story appears to contain a secret or credential ("'+secret[0].slice(0,40)+'"). Remove it from the story and from anything you share. Keep credentials out of intent files.','context/security.md');
   const critItems=fields.criteria.source==='found'?fields.criteria.text.split('\n'):[];
-  if(!critItems.length)add('Missing','No acceptance criteria were found. Without them nothing tells you when the work is right. Add 3 to 6 statements that someone could mark pass or fail.');
+  if(!critItems.length)add('Missing','No acceptance criteria were found. Without them nothing tells you when the work is right. Add 3 to 6 statements that someone could mark pass or fail.','context/business-rules.md, rule 2');
   const flagged=new Set();
   critItems.forEach(c=>{
     if(!isCheckable(c)){
       const v=findVague(c);
       v.forEach(w=>flagged.add(w));
-      add('Uncheckable','"'+c+'" cannot be marked pass or fail as written.'+(v.length?' "'+v[0]+'" is not measurable: say how much, and how someone would check it (for example a number, a limit, or something visible on screen).':' Say what someone would see, or measure, when it is true.'));
+      add('Uncheckable','"'+c+'" cannot be marked pass or fail as written.'+(v.length?' "'+v[0]+'" is not measurable: say how much, and how someone would check it (for example a number, a limit, or something visible on screen).':' Say what someone would see, or measure, when it is true.'),'context/business-rules.md, rule 2');
     }
   });
   const otherVague=[];
   lines.forEach(l=>{if(!critItems.includes(l.text))findVague(l.text).forEach(w=>{if(!flagged.has(w)&&!otherVague.includes(w))otherVague.push(w);});});
   if(want)findVague(want+' '+why).forEach(w=>{if(!flagged.has(w)&&!otherVague.includes(w))otherVague.push(w);});
-  if(otherVague.length)add('Ambiguity','Vague words in the story: '+otherVague.map(w=>'"'+w+'"').join(', ')+'. Each can mean different things to different people. Replace it with a check someone can perform, and put that check in the success criteria.');
-  if(fields.stop.source==='missing')add('Stop','No stop condition was found, and there are no criteria to base one on. Say exactly what has to be true for the work to be finished.');
-  else if(fields.stop.source==='suggested')add('Stop','The story has no definition of done, so a stop condition was suggested from the criteria. Edit it so it names the criteria that end the work, and says what to do when one fails.');
-  if(fields.outcome.source!=='missing'&&!why)add('Missing','The outcome does not say why it matters (no "so that" reason). Add it. It is what lets a reviewer judge whether the result is good.');
-  if(fields.inputs.source==='missing')add('Missing','No inputs were found. Say what may be used: data, files, links, other tickets, or systems.');
-  if(fields.outputs.source==='missing')add('Missing','No outputs were found. Say what will exist when this is done, and where.');
-  if(fields.constraints.source==='missing')add('Missing','No constraints were found. Add at least one boundary that must hold (limits on data, time, technology, or who is affected).');
+  if(otherVague.length)add('Ambiguity','Vague words in the story: '+otherVague.map(w=>'"'+w+'"').join(', ')+'. Each can mean different things to different people. Replace it with a check someone can perform, and put that check in the success criteria.','context/business-rules.md, rule 2');
+  if(fields.stop.source==='missing')add('Stop','No stop condition was found, and there are no criteria to base one on. Say exactly what has to be true for the work to be finished.','context/business-rules.md, rule 3');
+  else if(fields.stop.source==='suggested')add('Stop','The story has no definition of done, so a stop condition was suggested from the criteria. Edit it so it names the criteria that end the work, and says what to do when one fails.','context/business-rules.md, rule 3');
+  if(fields.outcome.source!=='missing'&&!why)add('Missing','The outcome does not say why it matters (no "so that" reason). Add it. It is what lets a reviewer judge whether the result is good.','context/glossary.md, Intent');
+  if(fields.inputs.source==='missing')add('Missing','No inputs were found. Say what may be used: data, files, links, other tickets, or systems.','context/glossary.md, Inputs');
+  if(fields.outputs.source==='missing')add('Missing','No outputs were found. Say what will exist when this is done, and where.','context/glossary.md, Outputs');
+  if(fields.constraints.source==='missing')add('Missing','No constraints were found. Add at least one boundary that must hold (limits on data, time, technology, or who is affected).','context/business-rules.md, rule 3');
   if(!hasOutOfScope)add('Scope','Nothing says what is out of scope. Add at least one non-goal so helpful extras do not creep in.');
   const words=(text.match(/\S+/g)||[]).length;
   if(storyCount>1)add('Size','This looks like '+storyCount+' stories in one. Consider one intent per story.');
   else if(critItems.length>8||words>400)add('Size','This story is large ('+critItems.length+' criteria, '+words+' words). Consider splitting it into smaller intents. Prefer the smallest useful change.');
   const cons2=[...new Set((text.match(CONSEQUENCE_RE)||[]).map(w=>w.toLowerCase()))];
-  if(cons2.length)add('Consequence','The story mentions '+cons2.map(w=>'"'+w+'"').join(', ')+'. Decide whether the consequence of a mistake is low, medium, or high, and name who approves the change before it ships. High-consequence work needs explicit human approval.');
+  if(cons2.length)add('Consequence','The story mentions '+cons2.map(w=>'"'+w+'"').join(', ')+'. Decide whether the consequence of a mistake is low, medium, or high, and name who approves the change before it ships. High-consequence work needs explicit human approval.','context/business-rules.md, rule 6; context/security.md');
   const sugg=Object.keys(fields).filter(k=>fields[k].source==='suggested').map(k=>FIELD_LABELS[k]);
-  if(sugg.length)add('Missing','Parts labelled "Suggested" ('+sugg.join(', ')+') were filled in by the app, not taken from your story. Confirm each one.');
+  if(sugg.length)add('Missing','Parts labelled "Suggested" ('+sugg.join(', ')+') were filled in by the app, not taken from your story. Confirm each one.','context/glossary.md, Suggested');
   add('Limits','This is a rule-based check running in your browser. It cannot tell whether the criteria are correct, whether parts of the story contradict each other, or whether the story matches what the business wants. Have a person, or a review in a fresh session, check those.');
   return {key,title,fields,unmatched,notes};
 }
@@ -390,7 +390,7 @@ function renderJiraResult(res){
   if(!res.unmatched.length){const li=document.createElement('li');li.textContent='Every line of your story was placed.';nofit.appendChild(li);}
   res.unmatched.forEach(t=>{const li=document.createElement('li');li.textContent=t;nofit.appendChild(li);});
   const notes=document.getElementById('jiraNotes');notes.textContent='';
-  res.notes.forEach(n=>{const li=document.createElement('li');const tag=document.createElement('span');tag.className='tag';tag.textContent=n.tag;li.append(tag,document.createTextNode(n.text));notes.appendChild(li);});
+  res.notes.forEach(n=>{const li=document.createElement('li');const tag=document.createElement('span');tag.className='tag';tag.textContent=n.tag;li.append(tag,document.createTextNode(n.text));if(n.source){const src=document.createElement('span');src.className='src';src.textContent='Source: '+n.source;li.append(src);}notes.appendChild(li);});
   jiraStep(2);
   FIELDS.forEach(f=>{const a=document.getElementById('jf-'+f);a.style.height='auto';a.style.height=(a.scrollHeight+2)+'px';});
   document.getElementById('jiraResultTitle').focus();

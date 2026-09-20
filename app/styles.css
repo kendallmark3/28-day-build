@@ -12,3 +12,4 @@ dialog{border:0;border-radius:20px;padding:24px;width:min(92vw,760px);max-height
 .dash{max-width:720px;margin:0 auto 14px;background:#fff;border:1px solid #e8dfd4;border-radius:20px;padding:12px 20px}.stats{display:flex;gap:8px 24px;flex-wrap:wrap}.stat{display:flex;align-items:baseline;gap:8px}.stat strong{font-size:1.6rem;line-height:1}.stat span{color:#3a4550;font-size:.9rem}.next{margin:6px 0 0;font-weight:600}
 .dash{padding:10px 20px;margin-bottom:10px}.next{margin-top:4px}
 @media(max-width:600px){header{padding:12px 16px 10px}h1{font-size:1.6rem;margin:.05em 0}main{padding:12px 16px}.dash{padding:8px 12px}.stat strong{font-size:1.25rem}.stat span{font-size:.78rem}.next{font-size:.88rem}.panel{padding:14px}label{margin:8px 0 3px}input,textarea{padding:6px 10px}}
+.src{display:block;margin-top:2px;font-size:.85rem;color:#5b6570}

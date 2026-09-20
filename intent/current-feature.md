@@ -17,6 +17,8 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - A dashboard at the top of the Intents view showing how many intents are saved, how many lack a constraint or a stop condition, and a next-step line
 - A navigation bar at the top with three items, Intents, References, and About, each showing one view of the page
 - A References view listing the sources in Appendix E ("Sources and Further Reading") of `book/The-Ultimate-Guide-to-Claude.pdf`, plus the reference files in this repository
+- A "Project context" section on the References view listing the six files in `context/`, each with a purpose line and a link to it in the project's GitHub repository
+- A Source line on each Jira-story note that applies a rule from `context/`
 - An About view explaining the book's "learn it, teach it, master it" concept
 - A "Start from a Jira story" button on the Intents view that opens a modal. In the modal the user pastes a Jira story, and the app fills in the six parts of an intent, shows notes on what did not fit and what to improve, and offers the intent as a downloadable Markdown file
 
@@ -25,7 +27,7 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - The Jira story analysis is rule-based code that runs in the browser: the same text always gives the same result. It makes no AI call and no network request, and the pasted story is never stored
 - All data stays in `localStorage`; the app makes no network calls. External links are plain anchors that only the user's click follows, opened in a new tab with `rel="noopener noreferrer"`
 - No API keys or credentials in code; no AI API calls from the browser
-- May create or modify only `app/index.html`, `app/app.js`, `app/styles.css`, and `evidence/build-tracker.md`. All other files are off-limits, including `days/`, `context/`, `skills/`, `templates/`, `starter/`, `reference-final/`, and `book/`
+- Code changes are limited to `app/index.html`, `app/app.js`, and `app/styles.css`. Each day's work may also edit its own `days/day-XX.md`, this file, its evidence record, and any `context/` file that day's intent names. All other files are off-limits, including `starter/`, `reference-final/`, `book/`, `skills/`, and `templates/`
 - Non-goals: deleting saved intents, search, export or import, evidence attachment, readiness check, capability promotion, accounts or sync, AI calls, any view beyond Intents, References, and About, and for the Jira feature: rewriting or fixing the story for the user, comparing or refining against a second story (a later round), importing from Jira by URL or file upload, saving the pasted story text
 - Meets `context/ux-standard.md`: next action shown, empty state explained, visible keyboard focus, mobile layout; each is checked by a success criterion below
 - The app stays runnable at every step: from `app/`, `python3 -m http.server <any free port>` serves it and the page loads without console errors
@@ -45,8 +47,8 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - Switching views does not discard text typed into the form: after leaving Intents and returning, the form holds what was typed
 - The nav items can be reached with Tab and activated with Enter, each with a visible focus outline
 - The About view names each of Learn, Teach, and Master with one or two sentences, and names the book it comes from
-- Every reference on the References view is one of: an item in the book's Appendix E, or a file or folder in this repository. No other references appear
-- Every external link on the References view is one the book states, opens in a new tab with `rel="noopener noreferrer"`, and has link text that says where it goes. No URL is given for an article the book gives only a title for
+- Every reference on the References view is one of: an item in the book's Appendix E, or a file or folder in this repository (including the "Project context" files). No other references appear
+- Every external link on the References view is either one of the six the book states or a link to a file in this project's own repository (`https://github.com/kendallmark3/28-day-build/`). Each opens in a new tab with `rel="noopener noreferrer"` and has link text that says where it goes. No URL is given for an article the book gives only a title for
 - In create mode (on page load, after a save, after an update, after Cancel) all six fields hold non-empty sample text, and the outcome sample begins with "Example:"
 - Choosing "Save intent" on the untouched sample form saves it: the list gains one item showing the sample outcome
 - At 375px viewport width the sample text is fully visible in all six fields, with no scrolling or clipping inside a field
@@ -68,6 +70,9 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - The Intents view starts with a dashboard, visible at load, that shows "Intents saved" (the number of saved intents) and "Missing a constraint or stop condition" (the number of saved intents whose constraints or stop condition is empty). Both numbers are correct on load, after saving, after an update, and after a reload
 - The dashboard's next-step line says: with no saved intents, to save the example or start from a Jira story; with one or more lacking a constraint or stop condition, to edit them; otherwise, to write the next intent or start from a Jira story
 - The dashboard does not appear on the References or About views
+- The References view has a "Project context" section listing all six context files (`architecture.md`, `business-rules.md`, `glossary.md`, `non-goals.md`, `security.md`, `ux-standard.md`), each with a purpose line and a link that opens that file in the project's GitHub repository. Every one of those links returns a page
+- Each Jira-story note whose rule is written in `context/` ends with a "Source:" line naming the file and, for business rules, the rule number. The cited rule says what the note claims. Notes with no rule in `context/` show no Source line
+- No text from the context files is copied into the app: only file names, purpose lines, and rule numbers appear
 
 ## Stop when
 - Every success criterion above has been checked in the running app, and each pass or fail result is recorded in `evidence/build-tracker.md`
