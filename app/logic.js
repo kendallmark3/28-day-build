@@ -571,3 +571,26 @@ function metrics(state){
     {id:'progress',label:'28-day progress',value:days,of:28,why:'The days of the plan you have finished.'}
   ];
 }
+
+// Onboarding: six steps, each judged done from the stored data (never from a click on the Start view).
+function onboardingSteps(state){
+  const hasUse=c=>c.uses.some(u=>u.success);
+  return [
+    {id:'intent',title:'Write an intent',why:'An intent says what you want and how you will know it is done, so the work starts from a boundary, not from a chat.',todo:'Fill in the six parts, or paste a Jira story.',done:state.intents.length>0,view:'intents',link:'Go to Intents'},
+    {id:'ready',title:'Check it is ready',why:'A readiness check catches missing parts and vague criteria before you build.',todo:'Open Review and read the readiness of your intent.',done:state.intents.some(i=>checkIntent(i).ready),view:'review',link:'Go to Review'},
+    {id:'evidence',title:'Record evidence, and label it',why:'Every claim is observed, inferred, or assumed, so you know what you actually checked.',todo:'On Review, add a claim and choose how you know it.',done:state.evidence.length>0,view:'review',link:'Go to Review'},
+    {id:'review',title:'Review the result',why:'A review marks each success criterion met, unmet, or untested, and names what was not checked.',todo:'On Review, record a review of your intent.',done:state.reviews.length>0,view:'review',link:'Go to Review'},
+    {id:'stakes',title:'Set the stakes',why:'The higher the cost of a mistake, the more checking and approval you need.',todo:'On Review, choose a consequence level and read its minimums.',done:state.intents.some(i=>CONSEQUENCES.includes(i.consequence)),view:'review',link:'Go to Review'},
+    {id:'capability',title:'Keep what you repeat',why:'Work that succeeds more than once becomes a capability others can reuse.',todo:'On Capabilities, record a successful use of a capability.',done:state.capabilities.some(hasUse),view:'capabilities',link:'Go to Capabilities'}
+  ];
+}
+// A one-line tour of each sample intent, worked out from the sample data.
+function sampleTour(){
+  const st=sampleState(0);
+  return st.intents.map(i=>{
+    const c=checkIntent(i),g=guardrailStatus(i,st);
+    const stakes=g.level?g.level+' consequence, '+(g.allMet?'all minimums met':g.openCount+(g.openCount===1?' minimum open':' minimums open')):'no consequence set';
+    const fix=c.checks.filter(x=>x.required&&!x.pass).length;
+    return '"'+clip(i.outcome,60)+'": '+(c.ready?'ready':'not ready')+', '+c.score+'%. '+stakes.charAt(0).toUpperCase()+stakes.slice(1)+'.'+(fix?' '+fix+' required '+(fix===1?'item':'items')+' to fix.':'');
+  });
+}

@@ -1,12 +1,29 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IntentWorkbench</title><link rel="icon" href="data:,"><link rel="stylesheet" href="styles.css"></head><body>
 <header><div><span class="eyebrow">28-DAY BUILD</span><h1>IntentWorkbench</h1><p>Turn one-off AI work into something your team can keep.</p></div>
-<nav aria-label="Main"><a href="#intents">Intents</a><a href="#review">Review</a><a href="#capabilities">Capabilities</a><a href="#overview">Overview</a><a href="#references">References</a><a href="#about">About</a></nav></header>
+<nav aria-label="Main"><a href="#start">Start</a><a href="#intents">Intents</a><a href="#review">Review</a><a href="#capabilities">Capabilities</a><a href="#overview">Overview</a><a href="#references">References</a><a href="#about">About</a></nav></header>
 <main>
 <div id="problemBanner" class="problem" role="alert" hidden>
 <p id="problemText"></p>
 <div class="actions"><button type="button" id="problemDownload" class="secondary small">Download a copy of the data</button><button type="button" id="problemEmpty" class="secondary small">Start with an empty project</button><button type="button" id="problemDismiss" class="secondary small">Dismiss</button></div>
 </div>
+<div id="view-start" hidden>
+<section class="panel">
+<h2>Start here</h2>
+<p class="lede">IntentWorkbench turns one-off AI work into something your team can keep. The rule: <strong>Prompt to explore. Write intent to repeat.</strong></p>
+<p>The loop you will follow: Intent, Result, Evidence, Refined Intent, Better Result. Each step below shows you one part of it, using your own work. A step ticks itself off when you have done it.</p>
+<h3>Six steps</h3>
+<p id="stepsSummary" class="readiness"></p>
+<ol id="steps" class="steps"></ol>
+<h3>Or look at the sample project first</h3>
+<p>It has three intents, evidence, a review, and two capabilities, so every screen has something to look at.</p>
+<ul id="tour" class="refs"></ul>
+<div class="actions"><button type="button" id="loadSample">Load the sample project</button></div>
+<p id="startStatus" class="status" role="status" aria-live="polite"></p>
+<p class="cta"><a href="#intents">Ready? Write your first intent.</a></p>
+</section>
+</div>
+
 <div id="view-intents">
 <section class="dash" aria-label="Dashboard" aria-live="polite">
 <div class="stats"><div class="stat"><strong id="statSaved">0</strong><span>Intents saved</span></div><div class="stat"><strong id="statGaps">0</strong><span>Missing a constraint or stop condition</span></div></div>

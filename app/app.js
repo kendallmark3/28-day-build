@@ -60,7 +60,14 @@ function renderDashboard(intents){
   const d=dashboardState(intents);
   document.getElementById('statSaved').textContent=d.saved;
   document.getElementById('statGaps').textContent=d.gaps;
-  document.getElementById('nextStep').textContent=d.next;
+  const ns=document.getElementById('nextStep');
+  ns.textContent=d.next;
+  if(d.saved===0){
+    const a=document.createElement('a');
+    a.href='#start';
+    a.textContent='New here? Open Start.';
+    ns.append(' ',a);
+  }
 }
 function renderProblem(info){
   const p=describeProblem({corrupt:info.corrupt,skipped:info.skipped,blocked:storageBlocked,failed:appFailed});
@@ -154,6 +161,7 @@ function render(){
   renderOverview(state);
   renderReview(state);
   renderCapabilities(state);
+  renderStart(state);
   listEl.textContent='';
   emptyEl.hidden=intents.length>0;
   intents.forEach(item=>{
@@ -230,7 +238,7 @@ form.addEventListener('submit',e=>{
   announce(vanished?'The intent you were editing no longer exists, so this was saved as a new intent: '+shorten(values.outcome)+' ('+intents.length+' saved).':wasEditing?'Updated: '+shorten(values.outcome)+'.':'Saved: '+shorten(values.outcome)+' ('+intents.length+' saved).');
 });
 
-const VIEWS=['intents','review','capabilities','overview','references','about'];
+const VIEWS=['start','intents','review','capabilities','overview','references','about'];
 function currentView(){
   const name=location.hash.replace('#','');
   if(name==='progress')return 'overview';
@@ -363,6 +371,7 @@ document.getElementById('resetSample').addEventListener('click',()=>{
     :'You have no saved intents. 3 sample intents will be added, and any evidence, reviews, capability uses, and progress will be replaced by sample records.';
   resetDialog.showModal();
 });
+document.getElementById('loadSample').addEventListener('click',()=>document.getElementById('resetSample').click());
 document.getElementById('resetCancel').addEventListener('click',()=>resetDialog.close());
 document.getElementById('resetConfirm').addEventListener('click',()=>{
   const ok=saveState(sampleState(Date.now()));
@@ -378,6 +387,7 @@ document.getElementById('resetConfirm').addEventListener('click',()=>{
   setMode(null);
   render();
   resetStatus.textContent='Reset to sample data: 3 intents.';
+  document.getElementById('startStatus').textContent='Sample project loaded. Open each view and look around.';
   document.getElementById('savedTitle').focus();
 });
 
@@ -638,6 +648,36 @@ function renderLadder(capabilities){
     li.append(line('h4','',LEVEL_NAMES[r.id]),line('p','',r.what),line('p','flowcount',n+(n===1?' item':' items')));
     ol.appendChild(li);
   });
+}
+function renderStart(state){
+  const steps=onboardingSteps(state);
+  const done=steps.filter(s=>s.done).length;
+  const next=steps.find(s=>!s.done);
+  const sum=document.getElementById('stepsSummary');
+  sum.textContent=done===steps.length?'All '+steps.length+' steps done. You have been through the whole loop.':done+' of '+steps.length+' steps done. Next: '+next.title.toLowerCase()+'. ';
+  if(next){const a=document.createElement('a');a.href='#'+next.view;a.textContent=next.link;sum.appendChild(a);}
+  const ol=document.getElementById('steps');
+  ol.textContent='';
+  steps.forEach(st=>{
+    const li=document.createElement('li');
+    li.className='claim';
+    li.dataset.step=st.id;
+    const head=document.createElement('div');
+    head.className='claimhead';
+    const b=document.createElement('span');
+    b.className='badge '+(st.done?'found':'missing');
+    b.textContent=st.done?'Done':'To do';
+    head.append(line('h4','capname',st.title),b);
+    li.append(head,line('p','claimtext',st.why),line('p','',st.todo));
+    const a=document.createElement('a');
+    a.href='#'+st.view;
+    a.textContent=st.link;
+    li.appendChild(a);
+    ol.appendChild(li);
+  });
+  const tour=document.getElementById('tour');
+  tour.textContent='';
+  sampleTour().forEach(t=>tour.appendChild(line('li','',t)));
 }
 function renderCapabilities(state){
   renderLadder(state.capabilities);

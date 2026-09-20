@@ -23,6 +23,7 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - A Sample usage section on each built-in capability card, and a "Record a review" form on the Review view
 - A capability ladder, classification by rung, an "Add an item to classify" form, and recorded uses with a promotion rule, on the Capabilities view
 - An Outcomes panel on the Overview view with four outcome metrics, and a 28-day progress list
+- A Start view: the loop, six self-checking steps, and a sample project with a computed tour
 
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
@@ -108,6 +109,12 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - The 28-day list has 28 checkboxes labelled "Day N: <title>" (titles from the roadmap), checked from the stored progress; ticking or unticking one saves it, updates the metric and the flow's Build stage, and says so in a polite status region; it survives a reload; the sample data has days 1 to 8 ticked
 - The Overview flow's Build stage links to the progress list, and opening `#progress` shows the Overview scrolled to it
 - No code counts page views, clicks, time spent, or saves; the metrics panel has no filled button, works by keyboard, and has no horizontal scroll at 375px
+- A Start item, first in the navigation, opens "Start here": the rule "Prompt to explore. Write intent to repeat.", the loop Intent, Result, Evidence, Refined Intent, Better Result in plain words, six steps, and a sample project section. The default view remains Intents
+- Each of the six steps (write an intent; check it is ready; record evidence and label it; review the result; set the stakes; keep what you repeat) shows a title, one sentence saying why, what to do, a Done or To do status, and a link to the view where it is done. A summary says "N of 6 steps done." and names the next step, or says all six are done
+- Status comes from the stored data: an intent exists; an intent is ready; an evidence claim exists; a review exists; an intent has a consequence level; a capability has a recorded successful use. `onboardingSteps(state)` in `app/logic.js` is pure: an empty project gives 0 of 6 with writing an intent next, and the sample project gives 6 of 6
+- "Load the sample project", the view's only filled button, opens the reset confirmation; once confirmed the view says the sample was loaded and all steps show Done. The sample tour lists the three sample intents with their readiness and consequence status computed from the sample data by `sampleTour()`, and it equals what the Review view shows
+- The empty dashboard's next step links to Start. The Start view works by keyboard, has no horizontal scroll at 375px, and with seven navigation items the Save intent button is still inside the window at 375x812
+- Starting from an empty project and following only the links and instructions on the Start view, a person can reach 6 of 6 steps done
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record
