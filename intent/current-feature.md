@@ -17,6 +17,7 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - Review records whose findings are each labelled observed, inferred, or assumed
 - A readiness check (`checkIntent`) and a Readiness section on the Review view
 - A Guardrails section on the Review view: consequence selector, minimums for the chosen level marked Met, Open, or Check yourself, an approver field for high, and a summary
+- A problem banner on every view for four failures (unreadable data, invalid records, blocked storage, unexpected error), a kept copy of stored data, and recovery actions
 
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
@@ -67,6 +68,14 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - For high consequence an approver field and a Record approval button appear; a named approval is stored on the intent, shown, and marks the minimum Met; an empty name is refused with a message; the app states that it cannot verify who approved
 - A summary line says whether all minimums are met or how many are open; with no level set the section says to choose one and shows no minimums
 - Consequence and approver are stored on the intent and survive a reload; an invalid stored consequence becomes not set; the sample intents show a medium intent with all minimums met, a low intent with one open, and one not set
+- `describeProblem({corrupt, skipped, blocked, failed})` in `app/logic.js` is pure and returns nothing when there is no problem; otherwise a kind, a message that says what happened and what to do, and the actions offered (unreadable: download, start empty, dismiss; invalid records: download, dismiss; blocked: dismiss; unexpected error: download, dismiss). An unexpected error outranks blocked storage, which outranks unreadable data, which outranks invalid records
+- When stored data is not valid JSON, or is valid JSON that is not an object, the app loads an empty project, shows a banner that says the data could not be read, keeps a copy of the original text under `intent-workbench-v1-backup`, and leaves the stored data untouched until the user acts
+- "Download a copy of the data" gives a file whose text is exactly the original stored text. "Start with an empty project" clears the stored data, hides the banner, keeps the backup, and says so
+- Saving while the banner is showing replaces the unreadable data with valid data and hides the banner, and the backup still holds the original text
+- When stored data holds invalid records (an empty outcome, a wrong evidence label, a missing intent, a collection that is not a list), the banner gives the number left out (matching `normalizeState`), a copy of the original is kept, and the valid records still load. It offers download and dismiss, but not start empty
+- A record with only an id and an outcome loads, is listed, and can be edited and saved with its other fields empty
+- When the browser blocks storage at load, a banner says nothing will be saved; when the app throws an unexpected error, a banner says something went wrong and to reload. Both are announced as alerts
+- "Reset to sample data" from an unreadable or invalid store gives a valid store and hides the banner. The banner is on every view, its buttons work by keyboard, it has no horizontal scroll at 375px, and it is absent (and the Save button position unchanged) when nothing is wrong
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record

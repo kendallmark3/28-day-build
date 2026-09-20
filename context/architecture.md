@@ -7,6 +7,7 @@ IntentWorkbench is intentionally local-first.
 - `localStorage` for user-created records, under the single key `intent-workbench-v1` (`{intents: [...]}`).
 - No backend. The app makes no network request of its own; the only outbound traffic is the user following a link.
 - Decision logic lives in `app/logic.js`, as functions that take data in and return data (`analyzeStory`, `intentMarkdown`, `dashboardState`, `normalizeState`, `sampleState`). `app/app.js` holds the code that touches the page and storage. `logic.js` never reads either.
+- Failures are shown, not hidden: unreadable data, invalid records, blocked storage, and unexpected errors each show a banner that says what to do. Before invalid or unreadable data can be dropped, a copy of the original text is kept under `intent-workbench-v1-backup`.
 - Stored data is one object with a version and five record types: projects, intents, evidence, reviews, and capabilities, plus a progress record. Old stored data (intents only) is upgraded on load.
 
 ## Views and modules

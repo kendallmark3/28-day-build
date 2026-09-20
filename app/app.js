@@ -17,10 +17,26 @@ function announce(text,revealSave){
 }
 function clearAnnouncement(){actionStatus.textContent='';}
 
+const BACKUP_KEY='intent-workbench-v1-backup';
+const storageBlocked=(()=>{
+  try{localStorage.setItem('intent-workbench-probe','1');localStorage.removeItem('intent-workbench-probe');return false;}
+  catch(e){return !(e&&/quota/i.test(e.name));}
+})();
+let appFailed=false;
+let bannerDismissed=false;
+// Reads the stored data without changing it. If it is unreadable or has invalid records, a copy of the original text is kept first.
 function readState(){
-  let raw=null;
-  try{raw=JSON.parse(localStorage.getItem(KEY));}catch(e){raw=null;}
-  return normalizeState(raw,Date.now());
+  let text=null,raw=null,corrupt=false;
+  try{text=localStorage.getItem(KEY);}catch(e){text=null;}
+  if(text!==null){
+    try{raw=JSON.parse(text);}catch(e){corrupt=true;}
+    if(!corrupt&&raw!==null&&(typeof raw!=='object'||Array.isArray(raw)))corrupt=true;
+  }
+  const result=normalizeState(corrupt?null:raw,Date.now());
+  if(text!==null&&(corrupt||result.skipped>0)){
+    try{if(localStorage.getItem(BACKUP_KEY)!==text)localStorage.setItem(BACKUP_KEY,text);}catch(e){}
+  }
+  return {state:result.state,skipped:result.skipped,corrupt,text};
 }
 function loadState(){return readState().state;}
 let lastSaveError='';
@@ -46,6 +62,18 @@ function renderDashboard(intents){
   document.getElementById('statGaps').textContent=d.gaps;
   document.getElementById('nextStep').textContent=d.next;
 }
+function renderProblem(info){
+  const p=describeProblem({corrupt:info.corrupt,skipped:info.skipped,blocked:storageBlocked,failed:appFailed});
+  const box=document.getElementById('problemBanner');
+  box.hidden=!p||bannerDismissed;
+  if(!p)return;
+  document.getElementById('problemText').textContent=p.text;
+  document.getElementById('problemDownload').hidden=!p.actions.includes('download');
+  document.getElementById('problemEmpty').hidden=!p.actions.includes('empty');
+}
+function dataCopyText(){
+  try{return localStorage.getItem(BACKUP_KEY)||localStorage.getItem(KEY)||'';}catch(e){return '';}
+}
 function renderOverview(state){
   const rows=[['Projects',state.projects.length],['Intents',state.intents.length],['Evidence records',state.evidence.length],['Reviews',state.reviews.length],['Capabilities',state.capabilities.length]];
   const el=document.getElementById('modelCounts');
@@ -53,7 +81,9 @@ function renderOverview(state){
   rows.forEach(([name,n])=>{const li=document.createElement('li');const strong=document.createElement('strong');strong.textContent=n;const span=document.createElement('span');span.textContent=name;li.append(strong,span);el.appendChild(li);});
 }
 function render(){
-  const state=loadState();
+  const info=readState();
+  renderProblem(info);
+  const state=info.state;
   const intents=state.intents;
   renderDashboard(intents);
   renderOverview(state);
@@ -454,6 +484,25 @@ document.getElementById('evidenceForm').addEventListener('submit',e=>{
   document.getElementById('claimText').focus();
   evidenceMessage('Evidence saved: '+shorten(claim)+' ('+LABEL_TEXT[label]+').');
 });
+
+/* ---- Failures: banner actions and unexpected errors ---- */
+document.getElementById('problemDownload').addEventListener('click',()=>{
+  const url=URL.createObjectURL(new Blob([dataCopyText()],{type:'text/plain'}));
+  const a=document.createElement('a');
+  a.href=url;a.download='intent-workbench-data-copy.txt';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+document.getElementById('problemEmpty').addEventListener('click',()=>{
+  try{localStorage.removeItem(KEY);}catch(e){}
+  bannerDismissed=false;
+  render();
+  announce('Started with an empty project. A copy of the old data is still kept.');
+});
+document.getElementById('problemDismiss').addEventListener('click',()=>{bannerDismissed=true;document.getElementById('problemBanner').hidden=true;});
+function showFailure(){appFailed=true;bannerDismissed=false;try{render();}catch(e){const b=document.getElementById('problemBanner');b.hidden=false;document.getElementById('problemText').textContent=describeProblem({failed:true}).text;}}
+window.addEventListener('error',showFailure);
+window.addEventListener('unhandledrejection',showFailure);
 
 /* ---- First render: everything above is defined by now ---- */
 render();

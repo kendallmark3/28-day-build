@@ -3,6 +3,10 @@
 <header><div><span class="eyebrow">28-DAY BUILD</span><h1>IntentWorkbench</h1><p>Turn one-off AI work into something your team can keep.</p></div>
 <nav aria-label="Main"><a href="#intents">Intents</a><a href="#review">Review</a><a href="#overview">Overview</a><a href="#references">References</a><a href="#about">About</a></nav></header>
 <main>
+<div id="problemBanner" class="problem" role="alert" hidden>
+<p id="problemText"></p>
+<div class="actions"><button type="button" id="problemDownload" class="secondary small">Download a copy of the data</button><button type="button" id="problemEmpty" class="secondary small">Start with an empty project</button><button type="button" id="problemDismiss" class="secondary small">Dismiss</button></div>
+</div>
 <div id="view-intents">
 <section class="dash" aria-label="Dashboard" aria-live="polite">
 <div class="stats"><div class="stat"><strong id="statSaved">0</strong><span>Intents saved</span></div><div class="stat"><strong id="statGaps">0</strong><span>Missing a constraint or stop condition</span></div></div>

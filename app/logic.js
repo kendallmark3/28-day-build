@@ -326,6 +326,8 @@ function normalizeState(raw,now){
   if(!raw||typeof raw!=='object'||Array.isArray(raw))return {state:base,skipped:0};
   const list=v=>Array.isArray(v)?v:[];
   let skipped=0;
+  ['projects','intents','evidence','reviews','capabilities'].forEach(k=>{if(raw[k]!==undefined&&!Array.isArray(raw[k]))skipped++;});
+  if(raw.progress!==undefined&&(raw.progress===null||typeof raw.progress!=='object'||Array.isArray(raw.progress)))skipped++;
   const keep=(arr,bad,fix)=>list(arr).filter(x=>{if(bad(x).length){skipped++;return false;}return true;}).map(fix||(x=>x));
   const projects=list(raw.projects).filter(p=>p&&typeof p.id==='string'&&str(p.name).trim()).map(p=>({id:p.id,name:p.name,created:str(p.created)}));
   const intents=keep(raw.intents,problemsIntent,i=>Object.assign({},i,{
@@ -462,4 +464,14 @@ function guardrailStatus(intent,state){
   }));
   const openCount=items.filter(x=>x.met===false).length;
   return {level,items,openCount,allMet:openCount===0};
+}
+
+// Failures: what happened, what to do, and which recovery actions to offer. Pure, so it can be tested without a page.
+function describeProblem(info){
+  const i=info||{};
+  if(i.failed)return {kind:'failed',text:'Something went wrong in the app. Reload the page. If it happens again, download a copy of your data first.',actions:['download','dismiss']};
+  if(i.blocked)return {kind:'blocked',text:'This browser is blocking local storage, so nothing you do here will be saved. Allow site data for this page, or try another browser.',actions:['dismiss']};
+  if(i.corrupt)return {kind:'corrupt',text:'Your saved data could not be read, so the app started with an empty project. A copy of the unreadable data was kept. Download it, or start with an empty project.',actions:['download','empty','dismiss']};
+  if(i.skipped>0)return {kind:'skipped',text:(i.skipped===1?'1 saved record was':i.skipped+' saved records were')+' invalid and left out. A copy of your original data was kept. Download it if you need '+(i.skipped===1?'that record':'those records')+'.',actions:['download','dismiss']};
+  return null;
 }
