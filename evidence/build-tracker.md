@@ -260,3 +260,9 @@ The criteria for the References view's "Project context" section, the Source lin
 # Addendum 7 — Reset to sample data
 
 The reset action's criteria were added to `intent/current-feature.md` on Day 12. Results and checks (141 of 141 passed, including all earlier checks) are recorded in `evidence/day-12.md`.
+
+---
+
+# Addendum 8 — Status messages and next-action links
+
+The criteria for the status line under the dashboard, the download message, and the links at the end of References and About were added to `intent/current-feature.md` on Day 13. The audit (11 of 21 passing before, 21 of 21 after) and the checks (155 of 155 passed, including all earlier checks) are recorded in `evidence/day-13.md`.

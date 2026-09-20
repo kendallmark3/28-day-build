@@ -14,6 +14,8 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - An Edit button on each listed intent that loads it back into the form
 - Sample text in all six fields whenever the form is in create mode, so a first-time user can save straight away and see what a completed intent looks like
 - Intents persisted in the browser's `localStorage`
+- A status line under the dashboard that names each action just taken, and a status line in the Jira modal after a download
+- A link to Intents at the end of the References and About views
 - A "Reset to sample data" button in the Saved intents panel that, after a confirmation, replaces all saved intents with 3 sample intents
 - A dashboard at the top of the Intents view showing how many intents are saved, how many lack a constraint or a stop condition, and a next-step line
 - A navigation bar at the top with three items, Intents, References, and About, each showing one view of the page
@@ -80,6 +82,11 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - If an intent is being edited when the reset is confirmed, the form returns to create mode with the sample text, and the stale edit cannot overwrite anything
 - Reset changes only the app's own `localStorage` key; other keys are untouched. Sample intents can be edited and saved like any other
 - The reset flow works with the keyboard only, with a visible focus outline on every control, and at 375px needs no horizontal scrolling
+- After saving, updating, cancelling an edit, and using a story in the form, a status message naming the action is shown under the dashboard in a polite live region ("Saved: <outcome> (N saved).", "Updated: <outcome>.", "Edit cancelled. Nothing was changed.", "Story loaded into the form. Review it, then choose Save intent."). It is inside the window at 1280x800 and at 375x812, even when the page was scrolled to the bottom of a long list, with at least 8px of space above it. Outcomes longer than 60 characters are shortened in the message
+- After "Use in form", both the status message and the Save button are inside the window at 1280x800
+- The status message disappears when the user starts typing in the form or starts editing an intent
+- After "Download intent file", the modal shows "Downloaded <file name>." in a polite live region
+- The References and About views each end with a link to the Intents view; following it shows Intents
 
 ## Stop when
 - Every success criterion above has been checked in the running app, and each pass or fail result is recorded in `evidence/build-tracker.md`

@@ -8,6 +8,7 @@
 <div class="stats"><div class="stat"><strong id="statSaved">0</strong><span>Intents saved</span></div><div class="stat"><strong id="statGaps">0</strong><span>Missing a constraint or stop condition</span></div></div>
 <p id="nextStep" class="next"></p>
 </section>
+<p id="actionStatus" class="status" role="status" aria-live="polite"></p>
 <section class="panel">
 <div class="panelhead"><h2 id="formTitle">New intent</h2><button type="button" id="openJira" class="secondary small">Start from a Jira story</button></div>
 <form id="intentForm" novalidate>
@@ -93,6 +94,7 @@
 <li><code>templates/</code>: intent, evidence, review, and decision-record templates.</li>
 <li><code>reference-final/</code>: a completed reference version of IntentWorkbench.</li>
 </ul>
+<p class="cta"><a href="#intents">Done reading? Go back to Intents.</a></p>
 </section>
 </div>
 
@@ -112,6 +114,7 @@
 
 <h3>About IntentWorkbench</h3>
 <p>IntentWorkbench is a small tool for turning one-off AI work into something your team can keep. It runs in your browser and stores what you write in your browser’s local storage. It is built over 28 days, one written intent at a time. Start with intent. Add complexity only when the evidence demands it.</p>
+<p class="cta"><a href="#intents">Ready to try it? Write your first intent.</a></p>
 <p class="note">Independent companion project. Claude is a trademark of Anthropic, PBC. This project is not affiliated with or endorsed by Anthropic.</p>
 </section>
 </div>
@@ -141,6 +144,7 @@
 <ul id="jiraNofit" class="refs"></ul>
 <h3>What to improve</h3>
 <ul id="jiraNotes" class="refs notes"></ul>
+<p id="jiraStatus" class="note" role="status" aria-live="polite"></p>
 <div class="actions"><button type="button" id="jiraDownload">Download intent file</button><button type="button" id="jiraUse" class="secondary">Use in form</button><button type="button" id="jiraBack" class="secondary">Back to story</button><button type="button" id="jiraClose2" class="secondary">Close</button></div>
 </div>
 </dialog>

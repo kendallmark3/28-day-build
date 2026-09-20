@@ -7,7 +7,16 @@ const emptyEl=document.getElementById('emptyState');
 const titleEl=document.getElementById('formTitle');
 const submitBtn=document.getElementById('submitBtn');
 const cancelBtn=document.getElementById('cancelEdit');
+const actionStatus=document.getElementById('actionStatus');
 let editingId=null;
+
+function shorten(t){return t.length>60?t.slice(0,57)+'…':t;}
+function announce(text,revealSave){
+  actionStatus.textContent=text;
+  actionStatus.scrollIntoView({block:'nearest'});
+  if(revealSave)submitBtn.scrollIntoView({block:'nearest'});
+}
+function clearAnnouncement(){actionStatus.textContent='';}
 
 function load(){
   try{const data=JSON.parse(localStorage.getItem(KEY));return Array.isArray(data&&data.intents)?data.intents:[];}
@@ -67,16 +76,19 @@ function startEdit(id){
   FIELDS.forEach(f=>{form.elements[f].value=item[f]||'';});
   fitFields();
   clearError();
+  clearAnnouncement();
   resetStatus.textContent='';
   setMode(id);
   form.elements.outcome.focus();
 }
+form.addEventListener('input',clearAnnouncement);
 cancelBtn.addEventListener('click',()=>{
   form.reset();
   unfitFields();
   clearError();
   setMode(null);
   form.elements.outcome.focus();
+  announce('Edit cancelled. Nothing was changed.');
 });
 form.addEventListener('submit',e=>{
   e.preventDefault();
@@ -102,12 +114,14 @@ form.addEventListener('submit',e=>{
     errorEl.hidden=false;
     return;
   }
+  const wasEditing=editingId!==null;
   form.reset();
   unfitFields();
   resetStatus.textContent='';
   setMode(null);
   render();
   form.elements.outcome.focus();
+  announce(wasEditing?'Updated: '+shorten(values.outcome)+'.':'Saved: '+shorten(values.outcome)+' ('+intents.length+' saved).');
 });
 render();
 
@@ -352,6 +366,7 @@ let jiraDraft=null;
 let jiraResult=null;
 
 function jiraStep(n){
+  document.getElementById('jiraStatus').textContent='';
   document.getElementById('jiraStep1').hidden=n!==1;
   document.getElementById('jiraStep2').hidden=n!==2;
 }
@@ -419,6 +434,7 @@ document.getElementById('jiraDownload').addEventListener('click',()=>{
   const a=document.createElement('a');
   a.href=url;a.download=intentFileName(jiraResult.key,jiraResult.title,v.outcome);
   document.body.appendChild(a);a.click();a.remove();
+  document.getElementById('jiraStatus').textContent='Downloaded '+a.download+'. To keep it in this app too, choose "Use in form".';
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 });
 document.getElementById('jiraUse').addEventListener('click',()=>{
@@ -429,6 +445,7 @@ document.getElementById('jiraUse').addEventListener('click',()=>{
   fitFields();
   jiraDialog.close();
   form.elements.outcome.focus();
+  announce('Story loaded into the form. Review it, then choose Save intent.',true);
 });
 
 /* ---- Reset to sample data ---- */
@@ -472,6 +489,7 @@ document.getElementById('resetConfirm').addEventListener('click',()=>{
   form.reset();
   unfitFields();
   clearError();
+  clearAnnouncement();
   setMode(null);
   render();
   resetStatus.textContent='Reset to sample data: 3 intents.';
