@@ -26,11 +26,12 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - A Start view: the loop, six self-checking steps, and a sample project with a computed tour
 - A polish audit (`evidence/checks/day26.js`) and the visual fixes it demands
 - A generated traceability table, corrected architecture notes, and run instructions for the app
+- Release documents (`docs/RELEASE-CHECKLIST.md`, `RELEASE-NOTES.md`, `DEMO-SCRIPT.md`, `NEXT-INTENT.md`, `REFLECTION.md`) and a release review (`reviews/day-28-release-review.md`)
 
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
 - All data stays in `localStorage` under the existing key; old stored data must still load
-- Code changes are limited to `app/index.html`, `app/app.js`, `app/styles.css`, and `app/logic.js`. Each day's work may also edit its own `days/day-XX.md`, this file, its evidence record, `docs/decisions/`, `evidence/checks/`, `evidence/traceability.md`, the run instructions (`README.md`, `app/README.md`, `run-app.sh`, `run-app.bat`), and any `context/` file that day's intent names. All other files are off-limits, including `starter/`, `reference-final/`, `book/`, `skills/`, and `templates/`
+- Code changes are limited to `app/index.html`, `app/app.js`, `app/styles.css`, and `app/logic.js`. Each day's work may also edit its own `days/day-XX.md`, this file, its evidence record, `docs/decisions/`, `evidence/checks/`, `evidence/traceability.md`, the release documents in `docs/`, `reviews/`, the run instructions (`README.md`, `app/README.md`, `run-app.sh`, `run-app.bat`), and any `context/` file that day's intent names. All other files are off-limits, including `starter/`, `reference-final/`, `book/`, `skills/`, and `templates/`
 - Non-goals: deleting records, a project switcher, import or export, sync, accounts
 - Every criterion in `intent/archive/intent-tracker.md` that passed before still passes, except those superseded below
 
@@ -125,6 +126,12 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - An accidental double-click never records a use twice (a repeat of the same kind within 1.5 seconds is ignored, with a message), and never saves the same intent twice (identical content within one second is ignored, with a message)
 - `context/architecture.md` lists each view as built and lists as not built only what is not built; nothing it calls not built exists in the app
 - The repository tells a newcomer how to run the app: `run-app.sh` and `run-app.bat` serve `app/`, `README.md` and `app/README.md` say so, and started from the script the app is usable in a browser within 3 seconds
+- `docs/RELEASE-CHECKLIST.md` lists each release item either done, with a pointer to evidence that exists in the repository, or not done, with the reason
+- `docs/DEMO-SCRIPT.md` has seven steps whose times total 180 seconds and whose spoken text is at most 2.7 words per second, and every step has been run in the app with its on-screen claims verified
+- `docs/NEXT-INTENT.md` holds one next intent, chosen from the evidence, with the six parts, and the app's own readiness check scores it as ready
+- `docs/RELEASE-NOTES.md` states what is included, how to run it, what was verified, and the known limitations; `docs/REFLECTION.md` names what became reusable and says who wrote it
+- `reviews/day-28-release-review.md` gives each of the six project success criteria a status (met, unmet, or untested) with evidence, lists blockers and non-blocking improvements, and states what was not checked; the review changed no file under `app/`, `context/`, `intent/`, or `skills/`
+- Every internal link in the app opens a view, and every external link opens in a new tab with `rel="noopener noreferrer"`
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record

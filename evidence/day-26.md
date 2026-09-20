@@ -23,12 +23,14 @@ Structured per `templates/evidence.md`.
 | links use the app link colour (#a4400f, navigation excepted) | 2 of 22 places failed (found by looking, then measured after the audit was extended to empty screens) | passed (22 places) |
 | focus outline >= 2px | passed (14 places) | passed (14 places) |
 | no horizontal scroll | passed (4 places) | passed (4 places) |
-- **Fixing one thing broke another, three times, and the audit and measurement caught each:**
+- **Fixing one thing broke another twice, and the audit had one blind spot; measurement and the audit caught all three:**
   1. Taller buttons pushed the Save intent button below the window: 32px past the fold on a phone (partly because the now-consistent, wider font made the "Start from a Jira story" row wrap onto two lines) and 2px on desktop. That would have broken a rule held since Day 6. Recovered space by keeping that heading row on one line on phones (a smaller heading and button padding there) and trimming the desktop dashboard padding and heading-row margin. Save is now in the window at 375x812 (804 of 812, 8px spare) and 1280x800 (798 of 800, 2px spare).
   2. My colour change targeted the class `.tag`, which the Jira note labels (Uncheckable, Ambiguity, and so on) also use with white-on-dark text; it turned them rust on dark (3.0:1). The audit flagged it and I scoped the change to the eyebrow label only.
   3. Viewing a screenshot showed the "New here? Open Start." link in default browser blue while every other link is rust. Two attempts to add a rule for it passed even without the fix: first because the audit only loaded the sample project (where that link does not appear), then because a rule that links match each other passes when there is only one link. I extended the audit to measure the empty-state screens, and made the rule compare against the app's link colour. It then failed without the fix (2 places) and passed with it.
 - Verified in real Chrome: 11 checks in `day26.js` (one per rule, each over many places) pass, and all suites pass: 393 of 393 in total.
 - Files changed: `app/styles.css`, `days/day-26.md`, `intent/current-feature.md`, `evidence/checks/day26.js`, this record. `context/ux-standard.md` was not changed.
+
+> Correction (Day 28): this sentence first said "three times"; the record shows two regressions (items 1 and 2) and one audit blind spot (item 3).
 
 ## Inferred
 - An audit only sees the states it visits. Two of the three near-misses above were audit blind spots (which data state, and which comparison), not app defects.

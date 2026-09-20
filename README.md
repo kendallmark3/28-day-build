@@ -16,6 +16,10 @@ By Day 28 you will have:
 - a guardrail and verification model
 - a repeatable workflow you can take to your own projects
 
+## Status
+
+The 28-day build is finished: IntentWorkbench 1.0. See `docs/RELEASE-NOTES.md` for what is included and what is not, and `reviews/day-28-release-review.md` for how it was judged, including what is still untested.
+
 ## The rule
 
 **Prompt to explore. Write intent to repeat.**

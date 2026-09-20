@@ -60,7 +60,7 @@ Every success criterion maps to at least one automated check in `evidence/checks
 | 52 | `context/ux-standard.md` has no vague word from the app's list, and each of its rules names something that ... | `day09:D9-1`, `day09:D9-2` |
 | 53 | `context/example-intent.md` has the six intent parts and a "Why this works" line for each, and its six part... | `day09:D9-3`, `day09:D9-4` |
 
-## Active intent (`intent/current-feature.md`, 83 criteria)
+## Active intent (`intent/current-feature.md`, 89 criteria)
 
 | # | Criterion | Checks |
 |---|---|---|
@@ -147,3 +147,9 @@ Every success criterion maps to at least one automated check in `evidence/checks
 | 81 | An accidental double-click never records a use twice (a repeat of the same kind within 1.5 seconds is ignor... | `day27:Q6`, `day27:Q7` |
 | 82 | `context/architecture.md` lists each view as built and lists as not built only what is not built; nothing i... | `day27:D1` |
 | 83 | The repository tells a newcomer how to run the app: `run-app.sh` and `run-app.bat` serve `app/`, `README.md... | `day27:D2`, `day27:D3`, `day27:D4` |
+| 84 | `docs/RELEASE-CHECKLIST.md` lists each release item either done, with a pointer to evidence that exists in ... | `day28:R4` |
+| 85 | `docs/DEMO-SCRIPT.md` has seven steps whose times total 180 seconds and whose spoken text is at most 2.7 wo... | `day28:R2`, `day28:R3` |
+| 86 | `docs/NEXT-INTENT.md` holds one next intent, chosen from the evidence, with the six parts, and the app's ow... | `day28:R5` |
+| 87 | `docs/RELEASE-NOTES.md` states what is included, how to run it, what was verified, and the known limitation... | `day28:R6` |
+| 88 | `reviews/day-28-release-review.md` gives each of the six project success criteria a status (met, unmet, or ... | `day28:R7`, `day28:R8` |
+| 89 | Every internal link in the app opens a view, and every external link opens in a new tab with `rel="noopener... | `day28:R1` |

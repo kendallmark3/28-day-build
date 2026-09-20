@@ -24,7 +24,8 @@ const active={1:['day11:M1'],2:['day11:M2a','day11:M2b','day11:M2c'],3:['day11:M
  65:['day24:M2a','day24:M2b','day24:M2c'],66:['day24:M1a','day24:M1b','day24:M3a'],67:['day24:M4a','day24:M4b','day24:M4c'],68:['day24:M5a','day24:M5b'],69:['day24:M1c','day24:M6a','day24:M6b','day24:M6c'],
  70:['day25:B2a','day25:B3a'],71:['day25:B3b','day25:B4a'],72:['day25:B1a','day25:B1b'],73:['day25:B4a','day25:B4b','day25:B4c','day25:B3c'],74:['day25:B2b','day25:B6a','day25:B6b','day25:B6c'],75:['day25:B5'],
  76:['day26:*contrast'],77:['day26:*no horizontal scroll'],78:['day26:*button height'],
- 79:['day27:T1'],80:['day27:Q1','day27:Q2','day27:Q3','day27:Q4','day27:Q5'],81:['day27:Q6','day27:Q7'],82:['day27:D1'],83:['day27:D2','day27:D3','day27:D4']};
+ 79:['day27:T1'],80:['day27:Q1','day27:Q2','day27:Q3','day27:Q4','day27:Q5'],81:['day27:Q6','day27:Q7'],82:['day27:D1'],83:['day27:D2','day27:D3','day27:D4'],
+ 84:['day28:R4'],85:['day28:R2','day28:R3'],86:['day28:R5'],87:['day28:R6'],88:['day28:R7','day28:R8'],89:['day28:R1']};
 const file=f=>({regression:'regression.js'}[f]||f+'.js');
 function exists(ref){
   const [f,id]=ref.split(':');const src=fs.readFileSync(path.join(__dirname,file(f)),'utf8');
