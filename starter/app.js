@@ -1,0 +1,1 @@
+document.getElementById('newIntent').addEventListener('click',()=>{const value=prompt('What outcome are you trying to accomplish?');if(value){document.getElementById('intentText').textContent=value;}});

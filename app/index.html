@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IntentWorkbench</title><link rel="icon" href="data:,"><link rel="stylesheet" href="styles.css"></head><body>
+<header><div><span class="eyebrow">28-DAY BUILD</span><h1>IntentWorkbench</h1><p>Turn one-off AI work into something your team can keep.</p></div>
+<nav aria-label="Main"><a href="#intents">Intents</a><a href="#references">References</a><a href="#about">About</a></nav></header>
+<main>
+<div id="view-intents">
+<section class="panel">
+<div class="panelhead"><h2 id="formTitle">New intent</h2><button type="button" id="openJira" class="secondary small">Start from a Jira story</button></div>
+<form id="intentForm" novalidate>
+<label for="outcome">Outcome <span class="req">(required)</span></label>
+<input id="outcome" name="outcome" type="text" autocomplete="off" aria-describedby="formError" value="Example: Weekly ticket report">
+<p id="formError" class="error" role="alert" hidden></p>
+<label for="inputs">Inputs</label>
+<textarea id="inputs" name="inputs" rows="1">Last week's ticket export (CSV)</textarea>
+<label for="outputs">Outputs</label>
+<textarea id="outputs" name="outputs" rows="1">One-page summary (summary.md)</textarea>
+<label for="constraints">Constraints</label>
+<textarea id="constraints" name="constraints" rows="1">No customer names; &lt;300 words</textarea>
+<label for="criteria">Success criteria</label>
+<textarea id="criteria" name="criteria" rows="1">Top 3 issues; counts match CSV</textarea>
+<label for="stop">Stop condition</label>
+<textarea id="stop" name="stop" rows="1">Stop when top 3 issues verified</textarea>
+<div class="actions"><button type="submit" id="submitBtn">Save intent</button><button type="button" id="cancelEdit" class="secondary" hidden>Cancel</button></div>
+</form>
+</section>
+<section class="panel">
+<h2>Saved intents</h2>
+<p id="emptyState" class="empty">No intents yet. An intent is a written outcome plus its inputs, outputs, constraints, success criteria, and stop condition. The form above starts with an example. Change it or save it as is with "Save intent".</p>
+<ul id="intentList" class="list"></ul>
+</section>
+</div>
+
+<div id="view-references" hidden>
+<section class="panel">
+<h2>References</h2>
+<p class="lede">Sources and further reading from <em>The Ultimate Guide to Claude</em> by Mark Kendall (Appendix E), plus the reference files in this repository.</p>
+
+<h3>Intent-Driven Engineering</h3>
+<ul class="refs">
+<li><a href="https://intent-driven-engineering.com" target="_blank" rel="noopener noreferrer">intent-driven-engineering.com</a>: the home of the framework and its evolving examples.</li>
+<li><a href="https://learnteachmaster.org" target="_blank" rel="noopener noreferrer">LearnTeachMaster.org</a>: an open, free knowledge platform with the articles and videos behind the guide.</li>
+</ul>
+
+<h3>Articles on LearnTeachMaster.org</h3>
+<ul class="refs">
+<li>Intent-Driven Engineering: Building Software From Intent, Not Just Prompts</li>
+<li>Progressive Intent: A Simpler Way to Build Better Software with AI</li>
+<li>Progressive Intent: I Built This Working Application in About Three Hours</li>
+<li>Your Company Does Not Have AI Automation. It Has Employees Prompting AI.</li>
+<li>Three Layers of AI-Native Engineering: A Practical Framework for the Consulting Architect</li>
+<li>Intent-Driven Development with Claude</li>
+<li>Building Intent-Driven Architecture with Claude Code</li>
+<li>Does Every AI Feature Need a Harness? No. But It Probably Needs Guardrails.</li>
+<li>Approved MCP Servers — Registry &amp; Governance</li>
+<li>You Don’t Need Permission to Start: Building Portable AI Automation with Intent Files</li>
+</ul>
+<p class="note">Search for these titles on LearnTeachMaster.org.</p>
+
+<h3>Starter code</h3>
+<ul class="refs">
+<li><a href="https://github.com/kendallmark3/intent-drive-starter" target="_blank" rel="noopener noreferrer">github.com/kendallmark3/intent-drive-starter</a>: the base repository for new intent-driven projects.</li>
+<li><a href="https://github.com/kendallmark3/intent-driven-plugin" target="_blank" rel="noopener noreferrer">github.com/kendallmark3/intent-driven-plugin</a>: a worked Claude Code plugin example.</li>
+<li><a href="https://github.com/kendallmark3/whackamole" target="_blank" rel="noopener noreferrer">github.com/kendallmark3/whackamole</a>: the application built with progressive intent.</li>
+</ul>
+
+<h3>Product documentation</h3>
+<ul class="refs">
+<li><a href="https://docs.claude.com" target="_blank" rel="noopener noreferrer">docs.claude.com</a>: Anthropic’s official documentation. Product features, models, limits, and pricing change often, so check it before you depend on any specific behavior.</li>
+</ul>
+
+<h3>In this repository</h3>
+<ul class="refs">
+<li><code>book/The-Ultimate-Guide-to-Claude.pdf</code>: the book.</li>
+<li><code>START-HERE.md</code>: the 28-day operating instructions.</li>
+<li><code>ROADMAP.md</code>: all 28 days at a glance.</li>
+<li><code>context/</code>: durable project context.</li>
+<li><code>skills/</code>: the intent-check and evidence-first review procedures.</li>
+<li><code>templates/</code>: intent, evidence, review, and decision-record templates.</li>
+<li><code>reference-final/</code>: a completed reference version of IntentWorkbench.</li>
+</ul>
+</section>
+</div>
+
+<div id="view-about" hidden>
+<section class="panel">
+<h2>Learn it. Teach it. Master it.</h2>
+<p class="lede">The arc behind <em>The Ultimate Guide to Claude</em> by Mark Kendall: “learn how the system works, teach what you have learned, and through repetition master the underlying principles.”</p>
+
+<h3>Learn</h3>
+<p>Pick one task you repeat with AI. Write its intent with the four parts plus constraints and a stop condition, run the intent check, and run it. You end with one real intent file.</p>
+
+<h3>Teach</h3>
+<p>Give the intent to a teammate. Watch them use it, fix whatever confused them, and record the time saved. You end with a shared, reusable asset.</p>
+
+<h3>Master</h3>
+<p>Mastery comes from repetition. In the book’s words: “You do not master intent by reading about it. You master it by writing one, running it, watching what happens, and writing a better one.”</p>
+
+<h3>About IntentWorkbench</h3>
+<p>IntentWorkbench is a small tool for turning one-off AI work into something your team can keep. It runs in your browser and stores what you write in your browser’s local storage. It is built over 28 days, one written intent at a time. Start with intent. Add complexity only when the evidence demands it.</p>
+<p class="note">Independent companion project. Claude is a trademark of Anthropic, PBC. This project is not affiliated with or endorsed by Anthropic.</p>
+</section>
+</div>
+</main>
+
+<dialog id="jiraDialog" aria-labelledby="jiraTitle">
+<div id="jiraStep1">
+<h2 id="jiraTitle">Start from a Jira story</h2>
+<p class="lede">Paste a Jira story. The app reads it here in your browser, sends it nowhere, and fills in the six parts of an intent.</p>
+<label for="jiraText">Jira story <span id="jiraExampleTag" class="req">(this is an example; replace it with your own)</span></label>
+<textarea id="jiraText" rows="14" spellcheck="false"></textarea>
+<p id="jiraError" class="error" role="alert" hidden></p>
+<div class="actions"><button type="button" id="jiraBuild">Build my intent</button><button type="button" id="jiraClose1" class="secondary">Close</button></div>
+</div>
+<div id="jiraStep2" hidden>
+<h2 id="jiraResultTitle" tabindex="-1">Your intent</h2>
+<p class="lede">Each part is labelled with where it came from. Edit anything before you download it.</p>
+<div id="jiraFields"></div>
+<h3>What didn't fit</h3>
+<p class="note">Lines from your story that were not placed in any part.</p>
+<ul id="jiraNofit" class="refs"></ul>
+<h3>What to improve</h3>
+<ul id="jiraNotes" class="refs notes"></ul>
+<div class="actions"><button type="button" id="jiraDownload">Download intent file</button><button type="button" id="jiraUse" class="secondary">Use in form</button><button type="button" id="jiraBack" class="secondary">Back to story</button><button type="button" id="jiraClose2" class="secondary">Close</button></div>
+</div>
+</dialog>
+<script src="app.js"></script></body></html>

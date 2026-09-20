@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="IntentWorkbench — local-first intent-driven engineering workbench"><title>IntentWorkbench</title><link rel="stylesheet" href="styles.css"></head><body>
+<div class="shell">
+<aside><div class="brand"><div class="mark">✳</div><div><b>IntentWorkbench</b><small>28-day field project</small></div></div><nav id="nav"></nav><div class="aside-note"><b>Operating rule</b><span>Prompt to explore.<br>Write intent to repeat.</span></div></aside>
+<div class="page"><header><div><span class="kicker">INTENT-DRIVEN ENGINEERING</span><h1 id="pageTitle">Dashboard</h1></div><div class="header-actions"><button class="ghost" id="resetBtn">Reset sample data</button><button id="quickAdd">+ New intent</button></div></header><main id="app"></main></div>
+</div>
+<div class="modal" id="modal" aria-hidden="true"><div class="modal-card"><div class="modal-head"><h2 id="modalTitle">New intent</h2><button class="icon" id="closeModal" aria-label="Close">×</button></div><form id="intentForm">
+<label>Outcome<textarea name="outcome" required placeholder="What are we trying to accomplish, and why?"></textarea></label>
+<div class="two"><label>Inputs<textarea name="inputs" placeholder="What may be used?"></textarea></label><label>Outputs<textarea name="outputs" placeholder="What should be produced?"></textarea></label></div>
+<div class="two"><label>Constraints<textarea name="constraints" placeholder="What boundaries must hold?"></textarea></label><label>Success criteria<textarea name="success" placeholder="How will we know it worked?"></textarea></label></div>
+<label>Stop when<input name="stop" placeholder="When is the work finished?"></label><div class="modal-actions"><button type="button" class="ghost" id="cancelModal">Cancel</button><button type="submit">Save intent</button></div></form></div></div>
+<script src="app.js"></script></body></html>
