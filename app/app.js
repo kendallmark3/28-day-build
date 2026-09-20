@@ -330,6 +330,25 @@ function renderReview(state){
   });
   const todo=ready.checks.filter(c=>c.required&&!c.pass);
   document.getElementById('readinessNext').textContent=todo.length?'Fix '+todo.length+' required '+(todo.length===1?'item':'items')+': '+todo.map(c=>c.label.toLowerCase()).join(', ')+'.':'All required checks pass. Record evidence below, then review the result.';
+  const g=guardrailStatus(chosen,state);
+  document.getElementById('consequence').value=g.level;
+  document.getElementById('guardrailEmpty').hidden=g.level!=='';
+  const glist=document.getElementById('guardrailList');
+  glist.textContent='';
+  g.items.forEach(m=>{
+    const li=document.createElement('li');
+    li.className='claim';
+    const b=document.createElement('span');
+    b.className='badge '+(m.met===null?'info':m.met?'found':'missing');
+    b.textContent=m.met===null?'Check yourself':m.met?'Met':'Open';
+    li.append(b,document.createTextNode(' '+m.text),line('span','src','From the '+m.level+' level'));
+    glist.appendChild(li);
+  });
+  const checked=g.items.filter(m=>m.met!==null).length;
+  document.getElementById('guardrailSummary').textContent=g.level?(g.allMet?'Guardrail: all minimums for '+g.level+' consequence are met.':'Guardrail: '+g.openCount+' of '+checked+' minimums for '+g.level+' consequence are open.')+' Source: '+GUARDRAIL_SOURCE+'.':'';
+  document.getElementById('approvalBox').hidden=g.level!=='high';
+  const approverInput=document.getElementById('approver');
+  if(document.activeElement!==approverInput)approverInput.value=chosen.approver||'';
   const ev=state.evidence.filter(e=>String(e.intentId)===String(reviewIntentId));
   document.getElementById('epistemic').textContent=epistemicSummary(ev);
   document.getElementById('evidenceEmpty').hidden=ev.length>0;
@@ -381,6 +400,32 @@ function changeLabel(id,label){
   render();
   evidenceMessage('Label changed to '+label+': '+shorten(evidence[at].claim)+'.');
 }
+function guardrailMessage(text){
+  const el=document.getElementById('guardrailStatus');
+  el.textContent=text;
+  el.scrollIntoView({block:'nearest'});
+}
+function updateChosenIntent(patch,failVerb){
+  const state=loadState();
+  const at=state.intents.findIndex(i=>String(i.id)===String(reviewIntentId));
+  if(at<0)return null;
+  const intents=state.intents.slice();
+  intents[at]=Object.assign({},intents[at],patch);
+  if(!saveState(Object.assign({},state,{intents}))){guardrailMessage(storageProblem(failVerb));render();return null;}
+  render();
+  return intents[at];
+}
+document.getElementById('consequence').addEventListener('change',e=>{
+  const level=e.target.value;
+  const it=updateChosenIntent({consequence:level},'set the consequence');
+  if(it)guardrailMessage(level?'Consequence set to '+level+': '+shorten(it.outcome)+'.':'Consequence cleared: '+shorten(it.outcome)+'.');
+});
+document.getElementById('recordApproval').addEventListener('click',()=>{
+  const name=document.getElementById('approver').value.trim();
+  if(!name){guardrailMessage('Type the approver\'s name first.');document.getElementById('approver').focus();return;}
+  const it=updateChosenIntent({approver:name},'record the approval');
+  if(it)guardrailMessage('Approval recorded: '+name+'.');
+});
 document.getElementById('editFromReview').addEventListener('click',()=>{
   const chosen=load().find(i=>String(i.id)===String(reviewIntentId));
   if(!chosen)return;

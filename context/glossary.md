@@ -8,7 +8,7 @@
 - **Stop condition**: explicit definition of when work is finished.
 - **Evidence**: information used to support a conclusion.
 - **Capability**: reusable, governed way of performing useful work.
-- **Guardrail**: a control sized to the consequence of failure.
+- **Guardrail**: a control sized to the consequence of failure. In the app, the minimum checks shown for a low, medium, or high consequence intent; they guide and report, and never block.
 - **Intent check**: reading an intent before building it, to find ambiguity, missing pieces, contradictions, uncheckable criteria, and a missing stop condition. See `skills/intent-check.md`.
 - **Progressive intent**: working in rounds, where the evidence from one result decides the next, sharper intent.
 - **Observed / inferred / assumed**: the three labels for an evidence claim. Observed was directly seen, inferred was reasoned from observations, assumed is not yet verified.

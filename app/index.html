@@ -49,6 +49,14 @@
 <ul id="readinessList" class="claims"></ul>
 <p id="readinessNext" class="note"></p>
 <button type="button" id="editFromReview" class="secondary small">Edit this intent</button>
+<h3>Guardrails</h3>
+<label for="consequence">Consequence if this goes wrong</label>
+<select id="consequence"><option value="">Not set</option><option value="low">Low: a mistake is cheap to undo</option><option value="medium">Medium: a mistake costs someone time or trust</option><option value="high">High: a mistake could cause real harm or loss</option></select>
+<p id="guardrailEmpty" class="empty">Choose a consequence level to see the minimum checks before you rely on this result.</p>
+<p id="guardrailSummary" class="note"></p>
+<ul id="guardrailList" class="claims"></ul>
+<div id="approvalBox" hidden><label for="approver">Approved by (name)</label><input id="approver" type="text" autocomplete="off"><button type="button" id="recordApproval" class="secondary small">Record approval</button><p class="note">The app records the name you type. It cannot verify who approved.</p></div>
+<p id="guardrailStatus" class="status" role="status" aria-live="polite"></p>
 <h3>Evidence</h3>
 <p id="epistemic" class="note"></p>
 <p id="evidenceEmpty" class="empty" hidden>No evidence yet. Add a claim below and label it observed, inferred, or assumed.</p>

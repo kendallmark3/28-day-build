@@ -214,13 +214,13 @@ function intentFileName(key,title,outcome){
 }
 function sampleIntents(now){
   const parts=[
-    {outcome:'Export a monthly usage report as a CSV so that I can share it with customers without asking an engineer',
+    {consequence:'medium',outcome:'Export a monthly usage report as a CSV so that I can share it with customers without asking an engineer',
      inputs:'Usage data from the analytics database\nDesign mockup: https://example.com/mockups/142',
      outputs:'A CSV export of the monthly usage report',
      constraints:'Out of scope: PDF export',
      criteria:'The Reports page has an "Export CSV" button\nThe CSV contains one row per user with columns: user, logins, last_seen\nThe export finishes in under 5 seconds for 10,000 rows\nShows an error message if the month has no data',
      stop:'Stop when every success criterion passes and each result is recorded.'},
-    {outcome:'Example: Weekly ticket report',
+    {consequence:'low',outcome:'Example: Weekly ticket report',
      inputs:"Last week's ticket export (CSV)",
      outputs:'One-page summary (summary.md)',
      constraints:'No customer names; <300 words',
@@ -230,7 +230,7 @@ function sampleIntents(now){
      inputs:'Current onboarding wiki page',
      outputs:'',constraints:'',criteria:'',stop:''}
   ];
-  return parts.map((p,i)=>Object.assign({id:now+i,projectId:DEFAULT_PROJECT_ID,created:new Date(now).toISOString(),consequence:''},p));
+  return parts.map((p,i)=>Object.assign({id:now+i,projectId:DEFAULT_PROJECT_ID,created:new Date(now).toISOString(),consequence:'',approver:''},p));
 }
 
 /* ---- Domain model: projects, intents, evidence, reviews, capabilities ---- */
@@ -271,7 +271,7 @@ function emptyState(now){
 function makeIntent(f,c){
   return {id:c.id,projectId:c.projectId||DEFAULT_PROJECT_ID,created:iso(c.now),
     outcome:str(f.outcome).trim(),inputs:str(f.inputs).trim(),outputs:str(f.outputs).trim(),constraints:str(f.constraints).trim(),criteria:str(f.criteria).trim(),stop:str(f.stop).trim(),
-    consequence:CONSEQUENCES.includes(f.consequence)?f.consequence:''};
+    consequence:CONSEQUENCES.includes(f.consequence)?f.consequence:'',approver:str(f.approver).trim()};
 }
 function makeEvidence(f,c){
   return {id:c.id,intentId:f.intentId,claim:str(f.claim).trim(),label:f.label,source:str(f.source).trim(),created:iso(c.now)};
@@ -331,7 +331,7 @@ function normalizeState(raw,now){
   const intents=keep(raw.intents,problemsIntent,i=>Object.assign({},i,{
     projectId:str(i.projectId)||DEFAULT_PROJECT_ID,
     outcome:str(i.outcome),inputs:str(i.inputs),outputs:str(i.outputs),constraints:str(i.constraints),criteria:str(i.criteria),stop:str(i.stop),
-    consequence:CONSEQUENCES.includes(i.consequence)?i.consequence:''}));
+    consequence:CONSEQUENCES.includes(i.consequence)?i.consequence:'',approver:str(i.approver)}));
   const ids=intents.map(i=>i.id);
   const evidence=keep(raw.evidence,e=>problemsEvidence(e,ids));
   const reviews=keep(raw.reviews,r=>problemsReview(r,ids),r=>Object.assign({},r,{findings:Array.isArray(r.findings)?r.findings:[]}));
@@ -430,4 +430,36 @@ function checkIntent(intent){
   ].map(c=>Object.assign(c,{required:REQUIRED_CHECKS.includes(c.id),source:CHECK_RULES[c.id]}));
   const passed=checks.filter(c=>c.pass).length;
   return {checks,score:Math.round(100*passed/checks.length),ready:checks.every(c=>!c.required||c.pass)};
+}
+
+// Guardrails: the minimum checks expected at each consequence level. Each level adds to the one below.
+const GUARDRAIL_MINIMUMS={
+  low:[
+    {id:'self',kind:'manual',text:'Check the result against the success criteria yourself.'},
+    {id:'evidence',kind:'auto',text:'Record at least one evidence claim.'}],
+  medium:[
+    {id:'ready',kind:'auto',text:'The readiness check passes (Ready).'},
+    {id:'review',kind:'auto',text:'Record a review of the result, with each success criterion marked met, unmet, or untested.'}],
+  high:[
+    {id:'assumed',kind:'auto',text:'Confirm every assumed claim, so none is left labelled assumed.'},
+    {id:'approval',kind:'approval',text:'A named person approves before the change ships.'}]
+};
+const GUARDRAIL_SOURCE='context/business-rules.md, rule 6; context/glossary.md, Guardrail';
+function guardrailStatus(intent,state){
+  const level=intent&&CONSEQUENCES.includes(intent.consequence)?intent.consequence:'';
+  if(!level)return {level:'',items:[],openCount:0,allMet:false};
+  const mine=e=>String(e.intentId)===String(intent.id);
+  const evidence=state.evidence.filter(mine);
+  const facts={
+    evidence:evidence.length>0,
+    ready:checkIntent(intent).ready,
+    review:state.reviews.some(mine),
+    assumed:labelCounts(evidence).assumed===0,
+    approval:str(intent.approver).trim()!==''};
+  const items=[];
+  CONSEQUENCES.slice(0,CONSEQUENCES.indexOf(level)+1).forEach(l=>GUARDRAIL_MINIMUMS[l].forEach(m=>{
+    items.push({id:m.id,level:l,kind:m.kind,text:m.text,met:m.kind==='manual'?null:facts[m.id]});
+  }));
+  const openCount=items.filter(x=>x.met===false).length;
+  return {level,items,openCount,allMet:openCount===0};
 }

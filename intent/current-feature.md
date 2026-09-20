@@ -16,6 +16,7 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - A Review view with an intent selector, that intent's evidence and reviews, and a form to add a labelled claim
 - Review records whose findings are each labelled observed, inferred, or assumed
 - A readiness check (`checkIntent`) and a Readiness section on the Review view
+- A Guardrails section on the Review view: consequence selector, minimums for the chosen level marked Met, Open, or Check yourself, an approver field for high, and a summary
 
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
@@ -60,6 +61,12 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - The Review view shows, for the selected intent, `Readiness: <score>%.` and `Ready.` or `Not ready yet.`, each check as Pass or Fix with its source rule, and a next step that says how many required items to fix and names them
 - A check that fails on success criteria names up to three criterion lines that cannot be marked pass or fail; a clarity failure names the vague words; text from the intent is shown as text
 - "Edit this intent" on the Review view opens that intent for editing in the Intents view; after updating it, the Review view shows the new score
+- `GUARDRAIL_MINIMUMS` in `app/logic.js` gives low 2 minimums, medium 2 more, and high 2 more; `guardrailStatus(intent, state)` is pure and returns the level, each minimum (with its level, kind, and Met, Open, or not applicable), the number open, and whether all are met. Each higher level includes every minimum of the lower ones
+- The Review view has a consequence selector (Not set, Low, Medium, High) for the selected intent; choosing a level saves it on the intent, shows the minimums for that level (2, 4, or 6), and says so in a polite status region
+- Each automatic minimum is Met or Open from the intent's own data: at least one evidence claim; the readiness check passes; a review is recorded; no claim is left assumed. Adding evidence, recording an approval, or fixing the intent changes the status without a reload
+- For high consequence an approver field and a Record approval button appear; a named approval is stored on the intent, shown, and marks the minimum Met; an empty name is refused with a message; the app states that it cannot verify who approved
+- A summary line says whether all minimums are met or how many are open; with no level set the section says to choose one and shows no minimums
+- Consequence and approver are stored on the intent and survive a reload; an invalid stored consequence becomes not set; the sample intents show a medium intent with all minimums met, a low intent with one open, and one not set
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record
