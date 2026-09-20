@@ -11,7 +11,7 @@ IntentWorkbench is intentionally local-first.
 - Stored data is one object with a version and five record types: projects, intents, evidence, reviews, and capabilities, plus a progress record. Old stored data (intents only) is upgraded on load.
 
 ## Views and modules
-Built (as of Day 8):
+Built:
 - Intents view: a dashboard (intents saved, intents missing a constraint or stop condition, next step), the intent form with sample text, and the saved-intents list with edit and a confirmed reset to sample data.
 - Jira story modal: paste a story, get the six parts filled in, notes on what to improve, and a Markdown download. Rule-based; runs in the browser.
 - Review view: pick an intent, see its evidence and reviews, add a claim with a label, and change a claim's label.
@@ -22,12 +22,13 @@ Built (as of Day 8):
 - Overview view: how the stages fit together (Intent, Context, Build, Evidence, Review, Capability) with a live count at each, and a count of each stored record type.
 - References view (including the project context files) and About view.
 
-Planned, not built:
-- Context Library
-- Evidence & Review
-- Capability Library
-- 28-Day Progress
-- Readiness score and guardrails
+Not built:
+- Export and import of a project's data, team sync, repository integration, and an audit history. These are the candidates in `docs/NEXT-INTENT.md`, to be chosen only when real use shows the need.
+- Deleting or renaming records and editing a claim's text. These are non-goals for now, so a mistyped claim can be relabelled but not corrected.
+- A project switcher. One default project exists; the model supports more.
+- Any server, account, or AI call. These are non-goals (`context/non-goals.md`).
+
+Context is shown as a list of links on the References view, not as a separate library view.
 
 ## Architectural rule
 Add infrastructure only when a demonstrated requirement cannot be met locally.

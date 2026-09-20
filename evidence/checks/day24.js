@@ -21,7 +21,7 @@ require('./h.js')('day24',async c=>{
   const a1=(await panel()).m[0].n;
   await c.view('review');await page.$eval('#notChecked',e=>{e.value='Something';});await page.click('#reviewSave');await c.wait(120);await c.view('overview');
   const a2=(await panel()).m[1].n;
-  await c.view('capabilities');await page.click('#capList > li:nth-child(2) button[aria-label^="Record a successful use"]');await c.wait(100);await page.click('#capList > li:nth-child(2) button[aria-label^="Promote"]');await c.wait(120);await c.view('overview');
+  await c.view('capabilities');await c.wait(1700);await page.click('#capList > li:nth-child(2) button[aria-label^="Record a successful use"]');await c.wait(100);await page.click('#capList > li:nth-child(2) button[aria-label^="Promote"]');await c.wait(120);await c.view('overview');
   const a3=(await panel()).m[2].n;
   rec('M3a without a reload: saving the example intent makes it 3 of 4 ready; recording a review makes 2 reviews; promoting the review skill makes 2 of 2 promoted',a1==='3 of 4'&&a2==='2'&&a3==='2 of 2',[a1,a2,a3].join(' | '));
   // ---- days

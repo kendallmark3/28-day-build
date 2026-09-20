@@ -8,6 +8,7 @@ const submitBtn=document.getElementById('submitBtn');
 const cancelBtn=document.getElementById('cancelEdit');
 const actionStatus=document.getElementById('actionStatus');
 let editingId=null;
+const lastSave={signature:'',at:0};
 
 function shorten(t){return t.length>60?t.slice(0,57)+'…':t;}
 function announce(text,revealSave){
@@ -214,6 +215,8 @@ form.addEventListener('submit',e=>{
     return;
   }
   clearError();
+  const signature=FIELDS.map(f=>values[f]).join('\u0001');
+  if(editingId===null&&signature===lastSave.signature&&Date.now()-lastSave.at<1000){announce('That was just saved. Change the text to save another.');return;}
   const intents=load();
   let vanished=false;
   const at=editingId!==null?intents.findIndex(x=>x.id===editingId):-1;
@@ -229,6 +232,7 @@ form.addEventListener('submit',e=>{
     return;
   }
   const wasEditing=editingId!==null;
+  if(!wasEditing){lastSave.signature=signature;lastSave.at=Date.now();}
   form.reset();
   unfitFields();
   resetStatus.textContent='';
@@ -637,6 +641,15 @@ function changeCapability(id,change,failVerb){
   render();
   return capabilities[at];
 }
+function recordUse(id,success){
+  const now=Date.now();
+  const current=loadState().capabilities.find(c=>c.id===id);
+  if(!current)return;
+  if(isDuplicateUse(current,success,now)){capMessage('That use was just recorded. Wait a moment before recording another.');return;}
+  const c=changeCapability(id,x=>withUse(x,success,now),'record the use');
+  if(!c)return;
+  capMessage(success?'Successful use recorded: '+shorten(c.name)+' ('+promotionStatus(c).successes+' successful).':'Unsuccessful use recorded: '+shorten(c.name)+'. It does not count toward promotion.');
+}
 function renderLadder(capabilities){
   const counts=ladderCounts(capabilities);
   const ol=document.getElementById('ladder');
@@ -732,8 +745,8 @@ function renderCapabilities(state){
     act.className='actions';
     const btn=(text,fn)=>{const x=document.createElement('button');x.type='button';x.className='secondary small';x.textContent=text;x.setAttribute('aria-label',text+': '+cap.name);x.addEventListener('click',fn);return x;};
     act.append(
-      btn('Record a successful use',()=>{const c=changeCapability(cap.id,x=>withUse(x,true,Date.now()),'record the use');if(c)capMessage('Successful use recorded: '+shorten(c.name)+' ('+promotionStatus(c).successes+' successful).');}),
-      btn('Record an unsuccessful use',()=>{const c=changeCapability(cap.id,x=>withUse(x,false,Date.now()),'record the use');if(c)capMessage('Unsuccessful use recorded: '+shorten(c.name)+'. It does not count toward promotion.');}),
+      btn('Record a successful use',()=>recordUse(cap.id,true)),
+      btn('Record an unsuccessful use',()=>recordUse(cap.id,false)),
       btn('Promote',()=>{
         const r=tryPromote(cap);
         if(!r.ok){capMessage(r.message);return;}

@@ -18,7 +18,7 @@ h('probe14',async c=>{
   row('A2','path traversal / odd characters in the download file name','name has only a-z 0-9 - and ends .md',/^intent-[a-z0-9-]+\.md$/.test(nameSafe)&&/^intent-[a-z0-9-]+\.md$/.test(nameSafe2),nameSafe+' | '+nameSafe2);
   // A3 duplicate ids: two submits in the same tick
   await c.start(null);
-  await page.evaluate(()=>{const f=document.getElementById('intentForm');f.requestSubmit();f.requestSubmit();f.requestSubmit();});
+  await page.evaluate(()=>{const f=document.getElementById('intentForm');for(const n of ['a','b','c']){document.getElementById('outcome').value='Same tick '+n;f.requestSubmit();}});
   const ids=(await c.stored()).intents.map(i=>i.id);
   row('A3','three Save submits in the same millisecond','3 intents with 3 distinct ids',ids.length===3&&new Set(ids).size===3,JSON.stringify(ids));
   // A4 storage full

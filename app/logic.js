@@ -594,3 +594,10 @@ function sampleTour(){
     return '"'+clip(i.outcome,60)+'": '+(c.ready?'ready':'not ready')+', '+c.score+'%. '+stakes.charAt(0).toUpperCase()+stakes.slice(1)+'.'+(fix?' '+fix+' required '+(fix===1?'item':'items')+' to fix.':'');
   });
 }
+
+// A use that repeats the previous one within 1.5 seconds is an accidental double-click, not a second use.
+const DUPLICATE_USE_MS=1500;
+function isDuplicateUse(cap,success,now){
+  const last=cap.uses[cap.uses.length-1];
+  return !!last&&last.success===(success===true)&&now-Date.parse(last.date)<DUPLICATE_USE_MS;
+}

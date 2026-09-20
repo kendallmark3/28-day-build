@@ -25,11 +25,12 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - An Outcomes panel on the Overview view with four outcome metrics, and a 28-day progress list
 - A Start view: the loop, six self-checking steps, and a sample project with a computed tour
 - A polish audit (`evidence/checks/day26.js`) and the visual fixes it demands
+- A generated traceability table, corrected architecture notes, and run instructions for the app
 
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
 - All data stays in `localStorage` under the existing key; old stored data must still load
-- Code changes are limited to `app/index.html`, `app/app.js`, `app/styles.css`, and `app/logic.js`. Each day's work may also edit its own `days/day-XX.md`, this file, its evidence record, `docs/decisions/`, `evidence/checks/`, and any `context/` file that day's intent names. All other files are off-limits, including `starter/`, `reference-final/`, `book/`, `skills/`, and `templates/`
+- Code changes are limited to `app/index.html`, `app/app.js`, `app/styles.css`, and `app/logic.js`. Each day's work may also edit its own `days/day-XX.md`, this file, its evidence record, `docs/decisions/`, `evidence/checks/`, `evidence/traceability.md`, the run instructions (`README.md`, `app/README.md`, `run-app.sh`, `run-app.bat`), and any `context/` file that day's intent names. All other files are off-limits, including `starter/`, `reference-final/`, `book/`, `skills/`, and `templates/`
 - Non-goals: deleting records, a project switcher, import or export, sync, accounts
 - Every criterion in `intent/archive/intent-tracker.md` that passed before still passes, except those superseded below
 
@@ -119,6 +120,11 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - On all seven views, both dialogs (each step of the Jira dialog and the reset confirmation), and the error banner, at 375px and 1280px: at most one filled button per view; every button at least 40px tall; text contrast of at least 4.5:1 (3:1 for large text); a single font family for text (code and the story box excepted); every button, link, field, and select shows a focus outline of at least 2px when tabbed to; every field has an accessible name; heading levels do not skip; no duplicate ids
 - Every view has no horizontal scroll at 320px, 375px, 768px, and 1280px, with sample data loaded
 - The polish audit passes on the finished app, and the recorded before-and-after table shows which rules failed and were fixed
+- Every success criterion in the archived and the active intent maps to at least one existing automated check, `node evidence/checks/traceability.js` passes, and it fails if a criterion is added without one; `evidence/traceability.md` is generated from the same mapping
+- Full storage during each of the eight write actions (save a claim, relabel a claim, record a review, set a consequence, record an approval, add a capability, record a use, tick a day) shows a "storage is full" message and changes nothing; a store of 3,000 intents, 6,000 evidence records, and 500 reviews loads, opens Review and Overview, and saves in under 3 seconds each; two open tabs adding different claims keep both; storage that blocks reads and writes shows the blocked-storage banner and throws nothing; a name with quotes and markup in a button label is inert
+- An accidental double-click never records a use twice (a repeat of the same kind within 1.5 seconds is ignored, with a message), and never saves the same intent twice (identical content within one second is ignored, with a message)
+- `context/architecture.md` lists each view as built and lists as not built only what is not built; nothing it calls not built exists in the app
+- The repository tells a newcomer how to run the app: `run-app.sh` and `run-app.bat` serve `app/`, `README.md` and `app/README.md` say so, and started from the script the app is usable in a browser within 3 seconds
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record

@@ -43,6 +43,15 @@ For each day:
 - `reviews/` — fresh-session review briefs
 - `evidence/` — results, test notes, and observations from each cycle
 
+## Run the app you built
+
+```bash
+./run-app.sh            # serves app/ at http://localhost:8080
+./run-app.sh 9000       # use another port if 8080 is taken
+```
+
+On Windows: `run-app.bat`. Python 3 is the only requirement. That is the working app; `app/README.md` says what is in it.
+
 ## Run the starter or final app
 
 No package installation is required.
