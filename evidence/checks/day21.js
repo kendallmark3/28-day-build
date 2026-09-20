@@ -23,8 +23,8 @@ require('./h.js')('day21',async c=>{
     if(k.purpose!==f.purpose)shown.push(k.id+' purpose');if(JSON.stringify(k.steps)!==JSON.stringify(f.procedure))shown.push(k.id+' procedure');
     if(!k.paras.includes(f.output))shown.push(k.id+' output');if(!k.paras.includes(f.checks))shown.push(k.id+' checks');
     if(!k.paras.includes('Owner: '+f.owner+'. Version: '+f.version+'.'))shown.push(k.id+' owner/version');
-    if(JSON.stringify(k.h4)!=='["Procedure","Output","Checks"]')shown.push(k.id+' headings');}
-  rec('K2b what each card shows equals the skills file: purpose, all procedure steps (7 and 6) as an ordered list, output, checks, owner and version, under Procedure, Output, and Checks headings',shown.length===0&&cards[0].steps.length===7&&cards[1].steps.length===6,JSON.stringify(shown));
+    if(JSON.stringify(k.h4)!=='["Procedure","Output","Checks","Sample usage"]')shown.push(k.id+' headings');}
+  rec('K2b what each card shows equals the skills file: purpose, all procedure steps (7 and 6) as an ordered list, output, checks, owner and version, under Procedure, Output, and Checks headings, then Sample usage (Day 22)',shown.length===0&&cards[0].steps.length===7&&cards[1].steps.length===6,JSON.stringify(shown));
   rec('K2c each card links to its file in the project repository (new tab, noopener noreferrer) and to where it is used',cards.every(k=>k.src&&k.src.href.startsWith('https://github.com/kendallmark3/28-day-build/blob/main/skills/')&&/noopener/.test(k.src.rel)&&/noreferrer/.test(k.src.rel)&&k.use.length===1&&k.use[0].href==='#review'),JSON.stringify(cards.map(k=>[k.src&&k.src.text,k.use[0]&&k.use[0].text])));
   await page.click('#capList li:nth-child(1) a[href="#review"]');await c.wait(150);
   rec('K2d the use link opens the Review view',(await page.evaluate(()=>!document.getElementById('view-review').hidden)),'');

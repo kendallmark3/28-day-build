@@ -80,6 +80,24 @@
 <h3>Reviews</h3>
 <p id="reviewsEmpty" class="empty" hidden>No reviews of this intent yet.</p>
 <ul id="reviewList" class="claims"></ul>
+<h4>Record a review</h4>
+<p id="reviewFormNone" class="empty" hidden>This intent has no success criteria to review yet. Edit it and add some first.</p>
+<form id="reviewForm" novalidate>
+<fieldset id="criteriaRows"><legend>Each success criterion</legend></fieldset>
+<label for="fObserved">Findings you observed (one per line)</label>
+<textarea id="fObserved" rows="2"></textarea>
+<label for="fInferred">Findings you inferred (one per line)</label>
+<textarea id="fInferred" rows="2"></textarea>
+<label for="fAssumed">Findings you assumed (one per line)</label>
+<textarea id="fAssumed" rows="2"></textarea>
+<label for="notChecked">Not checked <span class="req">(required)</span></label>
+<textarea id="notChecked" rows="2"></textarea>
+<label for="reviewSummary">Summary</label>
+<textarea id="reviewSummary" rows="2"></textarea>
+<p id="reviewError" class="error" role="alert" hidden></p>
+<div class="actions"><button type="submit" id="reviewSave" class="secondary">Record review</button></div>
+</form>
+<p id="reviewStatus" class="status" role="status" aria-live="polite"></p>
 </div>
 <p class="cta"><a href="#overview">Next: see the whole picture on Overview.</a></p>
 </section>

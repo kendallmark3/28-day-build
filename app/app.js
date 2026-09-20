@@ -343,6 +343,7 @@ window.addEventListener('storage',e=>{if(e.key===KEY||e.key===null)render();});
 
 /* ---- Review view: evidence labels ---- */
 let reviewIntentId=null;
+let reviewFormKey='';
 const LABEL_BADGE={observed:'found',inferred:'suggested',assumed:'missing'};
 const LABEL_TEXT={observed:'Observed',inferred:'Inferred',assumed:'Assumed'};
 const evidenceStatus=document.getElementById('evidenceStatus');
@@ -423,6 +424,30 @@ function renderReview(state){
     if(e.source)li.appendChild(line('p','note','Source: '+e.source));
     list.appendChild(li);
   });
+  const critLines=chosen.criteria.split('\n').map(l=>l.trim()).filter(Boolean);
+  const formKey=String(chosen.id)+'|'+critLines.join('\n');
+  document.getElementById('reviewFormNone').hidden=critLines.length>0;
+  document.getElementById('reviewForm').hidden=critLines.length===0;
+  if(formKey!==reviewFormKey){
+    reviewFormKey=formKey;
+    const rows=document.getElementById('criteriaRows');
+    rows.textContent='';
+    const lg=document.createElement('legend');
+    lg.textContent='Each success criterion';
+    rows.appendChild(lg);
+    critLines.forEach((text,i)=>{
+      const row=document.createElement('div');
+      row.className='crow';
+      const lab=document.createElement('label');
+      lab.htmlFor='crit-'+i;
+      lab.textContent=text;
+      const sel=document.createElement('select');
+      sel.id='crit-'+i;
+      [['untested','Untested'],['met','Met'],['unmet','Unmet']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;sel.appendChild(o);});
+      row.append(lab,sel);
+      rows.appendChild(row);
+    });
+  }
   const rv=state.reviews.filter(r=>String(r.intentId)===String(reviewIntentId));
   document.getElementById('reviewsEmpty').hidden=rv.length>0;
   const rl=document.getElementById('reviewList');
@@ -510,6 +535,37 @@ document.getElementById('evidenceForm').addEventListener('submit',e=>{
   evidenceMessage('Evidence saved: '+shorten(claim)+' ('+LABEL_TEXT[label]+').');
 });
 
+document.getElementById('reviewForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const err=document.getElementById('reviewError');
+  const notChecked=document.getElementById('notChecked').value.trim();
+  if(!notChecked){
+    err.textContent='Say what was not checked. A review always names its gaps.';
+    err.hidden=false;
+    document.getElementById('notChecked').focus();
+    return;
+  }
+  err.hidden=true;
+  const state=loadState();
+  const intent=state.intents.find(i=>String(i.id)===String(reviewIntentId));
+  if(!intent)return;
+  const criteria=[...document.querySelectorAll('#criteriaRows .crow')].map(row=>({text:row.querySelector('label').textContent,status:row.querySelector('select').value}));
+  const findings=[];
+  [['fObserved','observed'],['fInferred','inferred'],['fAssumed','assumed']].forEach(([id,label])=>{
+    document.getElementById(id).value.split('\n').map(t=>t.trim()).filter(Boolean).forEach(text=>findings.push({text,label}));
+  });
+  const now=Date.now();
+  const review=makeReview({intentId:intent.id,criteria,findings,notChecked,summary:document.getElementById('reviewSummary').value},{id:nextReviewId(state.reviews,now),now});
+  if(!saveState(Object.assign({},state,{reviews:state.reviews.concat(review)}))){err.textContent=storageProblem('save');err.hidden=false;return;}
+  document.getElementById('reviewForm').reset();
+  reviewFormKey='';
+  render();
+  const n=s=>criteria.filter(c=>c.status===s).length;
+  const st=document.getElementById('reviewStatus');
+  st.textContent='Review saved: '+n('met')+' met, '+n('unmet')+' unmet, '+n('untested')+' untested.';
+  st.scrollIntoView({block:'nearest'});
+});
+
 /* ---- Capabilities view ---- */
 const REPO_URL='https://github.com/kendallmark3/28-day-build/blob/main/';
 const USE_LINKS={'cap-intent-check':{href:'#review',text:'Check a saved intent on Review'},'cap-evidence-review':{href:'#review',text:'Review an intent on Review'}};
@@ -536,6 +592,8 @@ function renderCapabilities(state){
     if(cap.output){li.appendChild(line('h4','','Output'));li.appendChild(line('p','',cap.output));}
     if(cap.checks){li.appendChild(line('h4','','Checks'));li.appendChild(line('p','',cap.checks));}
     li.appendChild(line('p','note','Owner: '+cap.owner+'. Version: '+cap.version+'.'));
+    const usage=sampleUsage(cap.id);
+    if(usage){li.appendChild(line('h4','','Sample usage'));li.appendChild(line('p','sample',usage));}
     const links=document.createElement('p');
     if(cap.file){
       const f=document.createElement('a');

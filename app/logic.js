@@ -493,3 +493,34 @@ function flowStages(state,contextCount){
     {id:'capability',name:'Capability',what:'Keep what you repeat, once it has worked more than once.',count:promoted,rest:' of '+state.capabilities.length+' promoted',view:'capabilities'}
   ];
 }
+
+// Reviews: a new id, a one-line description of a review, and the worked examples shown on capability cards.
+function nextReviewId(reviews,now){
+  let n=0;
+  while(reviews.some(r=>r.id==='rv-'+now+'-'+n))n++;
+  return 'rv-'+now+'-'+n;
+}
+function clip(t,n){
+  const x=str(t);
+  return x.length>n?x.slice(0,n-3)+'…':x;
+}
+function describeReview(review,intent){
+  const n=s=>review.criteria.filter(c=>c.status===s).length;
+  const f=labelCounts((review.findings||[]).map(x=>({label:x.label})));
+  const total=(review.findings||[]).length;
+  return 'Review of "'+clip(intent&&intent.outcome,60)+'": '+n('met')+' met, '+n('unmet')+' unmet, '+n('untested')+' untested. '
+    +total+' '+(total===1?'finding':'findings')+' ('+f.observed+' observed, '+f.inferred+' inferred, '+f.assumed+' assumed). Not checked: '+str(review.notChecked);
+}
+function sampleUsage(capId){
+  const st=sampleState(0);
+  if(capId==='cap-evidence-review'){
+    const r=st.reviews[0];
+    return describeReview(r,st.intents.find(i=>i.id===r.intentId));
+  }
+  if(capId==='cap-intent-check'){
+    const d=st.intents[2],r=checkIntent(d);
+    const todo=r.checks.filter(c=>c.required&&!c.pass).map(c=>c.label.toLowerCase());
+    return 'Run on "'+clip(d.outcome,60)+'": '+r.score+'%, '+(r.ready?'ready':'not ready')+'.'+(todo.length?' Fix '+todo.length+' required '+(todo.length===1?'item':'items')+': '+todo.join(', ')+'.':'');
+  }
+  return '';
+}

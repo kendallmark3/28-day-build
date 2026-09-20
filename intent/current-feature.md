@@ -20,6 +20,7 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - A problem banner on every view for four failures (unreadable data, invalid records, blocked storage, unexpected error), a kept copy of stored data, and recovery actions
 - A "How it fits together" panel on the Overview view showing the six-stage operating model with live counts
 - A Capabilities view listing packaged capabilities as cards (purpose, procedure, output, checks, owner, version, source file, and where to use it)
+- A Sample usage section on each built-in capability card, and a "Record a review" form on the Review view
 
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
@@ -88,6 +89,11 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - The card for "Intent check" has the purpose, procedure lines, output, and checks written in `skills/intent-check.md`, word for word; the card for "Evidence-first review" likewise matches `skills/evidence-first-review.md`; a check fails if the app and the files differ
 - `skills/intent-check.md` and `skills/evidence-first-review.md` each have an Owner and a Version section, and the app shows the same owner and version
 - The Capability stage of the Overview flow links to the Capabilities view. The Capabilities view ends with a link to the next action, works by keyboard, and has no horizontal scroll at 375px
+- The "Evidence-first review" card has a Sample usage that describes the sample review (the intent, the count met, unmet, and untested, the number of findings by label, and what was not checked) and the "Intent check" card has one for the draft sample intent (its readiness score, ready or not, and what to fix). Both are computed from the sample data by `sampleUsage` and equal what the sample data contains
+- The Review view has a "Record a review" form for the selected intent with one row per success criterion line and a status choice (Untested, Met, Unmet; Untested by default), three finding boxes (observed, inferred, assumed; one finding per line), a required "Not checked" box, and a summary box; its button is secondary
+- Recording without "Not checked" is refused with a message and nothing is stored. A recorded review is stored as a valid review for that intent with the chosen statuses and findings labelled by the box they were entered in, is listed under Reviews, and the status message reads "Review saved: N met, M unmet, K untested."
+- An intent with no success criteria shows a message that there is nothing to review yet, and no form
+- Recording a review turns the review minimum of a medium-consequence intent to Met without a reload. Hostile text is shown as text, long text wraps at 375px with no horizontal scroll, and the form works by keyboard
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record
