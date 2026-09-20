@@ -262,7 +262,7 @@ document.getElementById('resetSample').addEventListener('click',()=>{
   const n=load().length;
   document.getElementById('resetMsg').textContent=n
     ?'Your '+n+(n===1?' saved intent':' saved intents')+' will be replaced by 3 sample intents. Evidence, reviews, and capability records are replaced too. This cannot be undone.'
-    :'You have no saved intents. 3 sample intents will be added, with sample evidence, reviews, and capability records.';
+    :'You have no saved intents. 3 sample intents will be added, and any evidence, reviews, capability uses, and progress will be replaced by sample records.';
   resetDialog.showModal();
 });
 document.getElementById('resetCancel').addEventListener('click',()=>resetDialog.close());

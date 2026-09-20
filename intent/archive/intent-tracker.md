@@ -1,4 +1,4 @@
-> Archived on Day 10. This is the accumulated tracker intent (Days 2-13). It is superseded as the active intent by `intent/current-feature.md`, but every criterion below still holds and the regression suite still checks them.
+> Archived on Day 10. This is the accumulated tracker intent (Days 2-13). It is superseded as the active intent by `intent/current-feature.md`, and every criterion below still holds except those listed under "Superseded criteria" in that file.
 
 # Intent: Intent tracker (from the prompt "build an intent tracker")
 

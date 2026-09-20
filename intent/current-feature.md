@@ -17,9 +17,15 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
 - All data stays in `localStorage` under the existing key; old stored data must still load
-- Code changes are limited to `app/index.html`, `app/app.js`, `app/styles.css`, and `app/logic.js`. Each day's work may also edit its own `days/day-XX.md`, this file, its evidence record, and any `context/` file that day's intent names. All other files are off-limits, including `starter/`, `reference-final/`, `book/`, `skills/`, and `templates/`
+- Code changes are limited to `app/index.html`, `app/app.js`, `app/styles.css`, and `app/logic.js`. Each day's work may also edit its own `days/day-XX.md`, this file, its evidence record, `docs/decisions/`, `evidence/checks/`, and any `context/` file that day's intent names. All other files are off-limits, including `starter/`, `reference-final/`, `book/`, `skills/`, and `templates/`
 - Non-goals: deleting records, a project switcher, import or export, sync, accounts
-- Every criterion in `intent/archive/intent-tracker.md` that passed before still passes
+- Every criterion in `intent/archive/intent-tracker.md` that passed before still passes, except those superseded below
+
+## Superseded criteria
+These archived criteria no longer hold, on purpose, because this intent adds to the product (Day 15 review, finding F1):
+- "The navigation bar shows Intents, References, and About": the navigation now also shows the views added by this intent (Overview, and later Review, Capabilities, and Start)
+- The non-goal "any view beyond Intents, References, and About": views are added by this intent
+- The non-goals "evidence attachment, readiness check, capability promotion": these are now in scope (evidence labels, readiness, guardrails, capabilities)
 
 ## Success criteria
 - After the first save or a reset, the stored data has `version: 2`, arrays `projects`, `intents`, `evidence`, `reviews`, `capabilities`, and an object `progress`
