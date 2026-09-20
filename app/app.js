@@ -23,9 +23,13 @@ function readState(){
   return normalizeState(raw,Date.now());
 }
 function loadState(){return readState().state;}
+let lastSaveError='';
 function saveState(state){
-  try{localStorage.setItem(KEY,JSON.stringify(state));return true;}
-  catch(e){return false;}
+  try{localStorage.setItem(KEY,JSON.stringify(state));lastSaveError='';return true;}
+  catch(e){lastSaveError=(e&&(/quota/i.test(e.name)||e.code===22||e.code===1014))?'full':'blocked';return false;}
+}
+function storageProblem(verb){
+  return lastSaveError==='full'?'Could not '+verb+': this browser\'s storage is full. Remove data or reset to sample data.':'Could not '+verb+': this browser is blocking local storage.';
 }
 function load(){return loadState().intents;}
 function save(intents){return saveState(Object.assign({},loadState(),{intents}));}
@@ -106,14 +110,16 @@ form.addEventListener('submit',e=>{
   }
   clearError();
   const intents=load();
-  if(editingId!==null){
-    const i=intents.findIndex(x=>x.id===editingId);
-    if(i>=0)intents[i]=Object.assign({},intents[i],values,{updated:new Date().toISOString()});
-  }else{
-    intents.push(Object.assign({id:Date.now(),created:new Date().toISOString()},values));
+  let vanished=false;
+  const at=editingId!==null?intents.findIndex(x=>x.id===editingId):-1;
+  if(at>=0)intents[at]=Object.assign({},intents[at],values,{updated:new Date().toISOString()});
+  else{
+    vanished=editingId!==null;
+    const now=Date.now();
+    intents.push(makeIntent(values,{id:nextIntentId(intents,now),now}));
   }
   if(!save(intents)){
-    errorEl.textContent='Could not save: this browser is blocking local storage.';
+    errorEl.textContent=storageProblem('save');
     errorEl.hidden=false;
     return;
   }
@@ -124,7 +130,7 @@ form.addEventListener('submit',e=>{
   setMode(null);
   render();
   form.elements.outcome.focus();
-  announce(wasEditing?'Updated: '+shorten(values.outcome)+'.':'Saved: '+shorten(values.outcome)+' ('+intents.length+' saved).');
+  announce(vanished?'The intent you were editing no longer exists, so this was saved as a new intent: '+shorten(values.outcome)+' ('+intents.length+' saved).':wasEditing?'Updated: '+shorten(values.outcome)+'.':'Saved: '+shorten(values.outcome)+' ('+intents.length+' saved).');
 });
 render();
 
@@ -134,6 +140,7 @@ function currentView(){
   return VIEWS.includes(name)?name:'intents';
 }
 function showView(name,moveFocus){
+  document.querySelectorAll('dialog[open]').forEach(d=>d.close());
   VIEWS.forEach(v=>{
     document.getElementById('view-'+v).hidden=v!==name;
     const link=document.querySelector('nav a[href="#'+v+'"]');
@@ -263,7 +270,7 @@ document.getElementById('resetConfirm').addEventListener('click',()=>{
   const ok=saveState(sampleState(Date.now()));
   resetDialog.close();
   if(!ok){
-    resetStatus.textContent='Could not reset: this browser is blocking local storage.';
+    resetStatus.textContent=storageProblem('reset');
     return;
   }
   form.reset();
@@ -275,3 +282,6 @@ document.getElementById('resetConfirm').addEventListener('click',()=>{
   resetStatus.textContent='Reset to sample data: 3 intents.';
   document.getElementById('savedTitle').focus();
 });
+
+/* ---- Another tab changed the stored data: show it here too ---- */
+window.addEventListener('storage',e=>{if(e.key===KEY||e.key===null)render();});

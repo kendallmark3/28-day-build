@@ -29,6 +29,12 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - Two built-in capabilities, "Intent check" and "Evidence-first review", always exist. Each has a purpose, procedure, output, checks, owner, version, level "skill", an empty list of uses, and is not promoted; they are added back if stored data lacks them
 - "Reset to sample data" restores at least 3 intents, evidence in each of the three labels, at least 1 review, uses on both built-in capabilities (one promoted, one not), and ticked progress days. The confirmation says that evidence, reviews, and capability records are replaced too
 - An Overview item in the navigation opens a view with a "Data model" panel that shows counts for Projects, Intents, Evidence records, Reviews, and Capabilities, matching the stored data
+- Hostile text (script tags, event-handler attributes, closing tags) in any field is stored and shown as text, and nothing runs
+- Saving several times in the same millisecond gives each intent a distinct id
+- When storage is full, saving says the storage is full (not that it is blocked), and earlier data is kept
+- Opening or leaving a view closes any open dialog
+- A save in another browser tab shows in this tab without a reload
+- Updating an intent that no longer exists saves it as a new intent and says so, instead of reporting a false update
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record

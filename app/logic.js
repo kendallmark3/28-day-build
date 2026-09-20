@@ -370,3 +370,8 @@ function sampleState(now){
   const days={};for(let d=1;d<=8;d++)days[d]=true;
   return {version:STATE_VERSION,projects:[{id:DEFAULT_PROJECT_ID,name:'My project',created:day}],intents,evidence,reviews,capabilities,progress:{days}};
 }
+
+// A new intent id: never equal to an existing numeric id, even when two intents are saved in the same millisecond.
+function nextIntentId(intents,now){
+  return intents.reduce((m,i)=>typeof i.id==='number'&&i.id>=m?i.id+1:m,now);
+}
