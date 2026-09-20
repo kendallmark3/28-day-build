@@ -20,7 +20,7 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - A dashboard at the top of the Intents view showing how many intents are saved, how many lack a constraint or a stop condition, and a next-step line
 - A navigation bar at the top with three items, Intents, References, and About, each showing one view of the page
 - A References view listing the sources in Appendix E ("Sources and Further Reading") of `book/The-Ultimate-Guide-to-Claude.pdf`, plus the reference files in this repository
-- A "Project context" section on the References view listing the six files in `context/`, each with a purpose line and a link to it in the project's GitHub repository
+- A "Project context" section on the References view listing the seven files in `context/`, each with a purpose line and a link to it in the project's GitHub repository
 - A Source line on each Jira-story note that applies a rule from `context/`
 - An About view explaining the book's "learn it, teach it, master it" concept
 - A "Start from a Jira story" button on the Intents view that opens a modal. In the modal the user pastes a Jira story, and the app fills in the six parts of an intent, shows notes on what did not fit and what to improve, and offers the intent as a downloadable Markdown file
@@ -73,7 +73,7 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - The Intents view starts with a dashboard, visible at load, that shows "Intents saved" (the number of saved intents) and "Missing a constraint or stop condition" (the number of saved intents whose constraints or stop condition is empty). Both numbers are correct on load, after saving, after an update, and after a reload
 - The dashboard's next-step line says: with no saved intents, to save the example or start from a Jira story; with one or more lacking a constraint or stop condition, to edit them; otherwise, to write the next intent or start from a Jira story
 - The dashboard does not appear on the References or About views
-- The References view has a "Project context" section listing all six context files (`architecture.md`, `business-rules.md`, `glossary.md`, `non-goals.md`, `security.md`, `ux-standard.md`), each with a purpose line and a link that opens that file in the project's GitHub repository. Every one of those links returns a page
+- The References view has a "Project context" section listing all seven context files (`architecture.md`, `business-rules.md`, `example-intent.md`, `glossary.md`, `non-goals.md`, `security.md`, `ux-standard.md`), each with a purpose line and a link that opens that file in the project's GitHub repository. Every one of those links returns a page
 - Each Jira-story note whose rule is written in `context/` ends with a "Source:" line naming the file and, for business rules, the rule number. The cited rule says what the note claims. Notes with no rule in `context/` show no Source line
 - No text from the context files is copied into the app: only file names, purpose lines, and rule numbers appear
 - The Saved intents panel has a "Reset to sample data" button. Activating it opens a confirmation dialog that says how many saved intents will be replaced, with "Replace with sample data" and "Cancel" buttons. Focus starts on Cancel, and Cancel or Esc closes the dialog and changes nothing
@@ -87,6 +87,8 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - The status message disappears when the user starts typing in the form or starts editing an intent
 - After "Download intent file", the modal shows "Downloaded <file name>." in a polite live region
 - The References and About views each end with a link to the Intents view; following it shows Intents
+- `context/ux-standard.md` has no vague word from the app's list, and each of its rules names something that can be checked in the running app
+- `context/example-intent.md` has the six intent parts and a "Why this works" line for each, and its six parts equal the app's first sample intent
 
 ## Stop when
 - Every success criterion above has been checked in the running app, and each pass or fail result is recorded in `evidence/build-tracker.md`
