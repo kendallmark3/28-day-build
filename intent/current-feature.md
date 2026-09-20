@@ -24,6 +24,7 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - A capability ladder, classification by rung, an "Add an item to classify" form, and recorded uses with a promotion rule, on the Capabilities view
 - An Outcomes panel on the Overview view with four outcome metrics, and a 28-day progress list
 - A Start view: the loop, six self-checking steps, and a sample project with a computed tour
+- A polish audit (`evidence/checks/day26.js`) and the visual fixes it demands
 
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
@@ -115,6 +116,9 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - "Load the sample project", the view's only filled button, opens the reset confirmation; once confirmed the view says the sample was loaded and all steps show Done. The sample tour lists the three sample intents with their readiness and consequence status computed from the sample data by `sampleTour()`, and it equals what the Review view shows
 - The empty dashboard's next step links to Start. The Start view works by keyboard, has no horizontal scroll at 375px, and with seven navigation items the Save intent button is still inside the window at 375x812
 - Starting from an empty project and following only the links and instructions on the Start view, a person can reach 6 of 6 steps done
+- On all seven views, both dialogs (each step of the Jira dialog and the reset confirmation), and the error banner, at 375px and 1280px: at most one filled button per view; every button at least 40px tall; text contrast of at least 4.5:1 (3:1 for large text); a single font family for text (code and the story box excepted); every button, link, field, and select shows a focus outline of at least 2px when tabbed to; every field has an accessible name; heading levels do not skip; no duplicate ids
+- Every view has no horizontal scroll at 320px, 375px, 768px, and 1280px, with sample data loaded
+- The polish audit passes on the finished app, and the recorded before-and-after table shows which rules failed and were fixed
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record

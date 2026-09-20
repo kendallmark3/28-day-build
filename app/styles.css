@@ -30,3 +30,8 @@ fieldset{border:1px solid #e8dfd4;border-radius:12px;padding:8px 12px;margin:10p
 .dayslist{padding-left:0;list-style:none;margin:10px 0}.dayslist li{margin:6px 0}.dayslist label{display:flex;gap:8px;align-items:center;font-weight:400;margin:0;min-height:40px}.dayslist input{width:20px;height:20px;flex:none}@media(min-width:700px){.dayslist{columns:2;column-gap:24px}}.stats-grid .note{font-size:.85rem}
 .steps{list-style:none;padding:0;margin:10px 0}.steps .claimhead h4{margin:0}#stepsSummary a{margin-left:4px}
 @media(min-width:900px){nav a{padding:8px 12px}}
+/* Day 26 polish: contrast, tap-target height, one font family (see context/ux-standard.md) */
+button{font-family:inherit;min-height:40px;background:#b8430f}.eyebrow{color:#b8430f}
+.panelhead{margin-bottom:0}.dash{padding:8px 20px}
+@media(max-width:600px){.panelhead{flex-wrap:nowrap}.panelhead h2{font-size:1.25rem}button.small{padding:6px 10px;font-size:.85rem}}
+a{color:#a4400f}
