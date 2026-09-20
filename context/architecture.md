@@ -10,7 +10,7 @@ IntentWorkbench is intentionally local-first.
 
 ## Views and modules
 Built (as of Day 8):
-- Intents view: a dashboard (intents saved, intents missing a constraint or stop condition, next step), the intent form with sample text, and the saved-intents list with edit.
+- Intents view: a dashboard (intents saved, intents missing a constraint or stop condition, next step), the intent form with sample text, and the saved-intents list with edit and a confirmed reset to sample data.
 - Jira story modal: paste a story, get the six parts filled in, notes on what to improve, and a Markdown download. Rule-based; runs in the browser.
 - References view (including the project context files) and About view.
 

@@ -14,6 +14,7 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - An Edit button on each listed intent that loads it back into the form
 - Sample text in all six fields whenever the form is in create mode, so a first-time user can save straight away and see what a completed intent looks like
 - Intents persisted in the browser's `localStorage`
+- A "Reset to sample data" button in the Saved intents panel that, after a confirmation, replaces all saved intents with 3 sample intents
 - A dashboard at the top of the Intents view showing how many intents are saved, how many lack a constraint or a stop condition, and a next-step line
 - A navigation bar at the top with three items, Intents, References, and About, each showing one view of the page
 - A References view listing the sources in Appendix E ("Sources and Further Reading") of `book/The-Ultimate-Guide-to-Claude.pdf`, plus the reference files in this repository
@@ -73,6 +74,12 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - The References view has a "Project context" section listing all six context files (`architecture.md`, `business-rules.md`, `glossary.md`, `non-goals.md`, `security.md`, `ux-standard.md`), each with a purpose line and a link that opens that file in the project's GitHub repository. Every one of those links returns a page
 - Each Jira-story note whose rule is written in `context/` ends with a "Source:" line naming the file and, for business rules, the rule number. The cited rule says what the note claims. Notes with no rule in `context/` show no Source line
 - No text from the context files is copied into the app: only file names, purpose lines, and rule numbers appear
+- The Saved intents panel has a "Reset to sample data" button. Activating it opens a confirmation dialog that says how many saved intents will be replaced, with "Replace with sample data" and "Cancel" buttons. Focus starts on Cancel, and Cancel or Esc closes the dialog and changes nothing
+- Confirming replaces all saved intents with 3 sample intents. The list shows them, the dashboard shows 3 saved and 1 missing a constraint or stop condition, the stored data holds exactly those 3 records, and the result is the same after a reload
+- After a reset, a message "Reset to sample data: 3 intents." is shown in a polite live region and focus moves to the Saved intents heading. If storage is blocked, the message says so and the list is unchanged
+- If an intent is being edited when the reset is confirmed, the form returns to create mode with the sample text, and the stale edit cannot overwrite anything
+- Reset changes only the app's own `localStorage` key; other keys are untouched. Sample intents can be edited and saved like any other
+- The reset flow works with the keyboard only, with a visible focus outline on every control, and at 375px needs no horizontal scrolling
 
 ## Stop when
 - Every success criterion above has been checked in the running app, and each pass or fail result is recorded in `evidence/build-tracker.md`

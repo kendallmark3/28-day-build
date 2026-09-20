@@ -67,6 +67,7 @@ function startEdit(id){
   FIELDS.forEach(f=>{form.elements[f].value=item[f]||'';});
   fitFields();
   clearError();
+  resetStatus.textContent='';
   setMode(id);
   form.elements.outcome.focus();
 }
@@ -103,6 +104,7 @@ form.addEventListener('submit',e=>{
   }
   form.reset();
   unfitFields();
+  resetStatus.textContent='';
   setMode(null);
   render();
   form.elements.outcome.focus();
@@ -427,4 +429,51 @@ document.getElementById('jiraUse').addEventListener('click',()=>{
   fitFields();
   jiraDialog.close();
   form.elements.outcome.focus();
+});
+
+/* ---- Reset to sample data ---- */
+function sampleIntents(now){
+  const parts=[
+    {outcome:'Export a monthly usage report as a CSV so that I can share it with customers without asking an engineer',
+     inputs:'Usage data from the analytics database\nDesign mockup: https://example.com/mockups/142',
+     outputs:'A CSV export of the monthly usage report',
+     constraints:'Out of scope: PDF export',
+     criteria:'The Reports page has an "Export CSV" button\nThe CSV contains one row per user with columns: user, logins, last_seen\nThe export finishes in under 5 seconds for 10,000 rows\nShows an error message if the month has no data',
+     stop:'Stop when every success criterion passes and each result is recorded.'},
+    {outcome:'Example: Weekly ticket report',
+     inputs:"Last week's ticket export (CSV)",
+     outputs:'One-page summary (summary.md)',
+     constraints:'No customer names; <300 words',
+     criteria:'Top 3 issues; counts match CSV',
+     stop:'Stop when top 3 issues verified'},
+    {outcome:'Draft: onboarding checklist for new engineers',
+     inputs:'Current onboarding wiki page',
+     outputs:'',constraints:'',criteria:'',stop:''}
+  ];
+  return parts.map((p,i)=>Object.assign({id:now+i,created:new Date(now).toISOString()},p));
+}
+const resetDialog=document.getElementById('resetDialog');
+const resetStatus=document.getElementById('resetStatus');
+document.getElementById('resetSample').addEventListener('click',()=>{
+  const n=load().length;
+  document.getElementById('resetMsg').textContent=n
+    ?'Your '+n+(n===1?' saved intent':' saved intents')+' will be replaced by 3 sample intents. This cannot be undone.'
+    :'You have no saved intents. 3 sample intents will be added.';
+  resetDialog.showModal();
+});
+document.getElementById('resetCancel').addEventListener('click',()=>resetDialog.close());
+document.getElementById('resetConfirm').addEventListener('click',()=>{
+  const ok=save(sampleIntents(Date.now()));
+  resetDialog.close();
+  if(!ok){
+    resetStatus.textContent='Could not reset: this browser is blocking local storage.';
+    return;
+  }
+  form.reset();
+  unfitFields();
+  clearError();
+  setMode(null);
+  render();
+  resetStatus.textContent='Reset to sample data: 3 intents.';
+  document.getElementById('savedTitle').focus();
 });

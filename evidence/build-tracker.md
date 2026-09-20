@@ -254,3 +254,9 @@ The dashboard's criteria were added to `intent/current-feature.md` on Day 7. Its
 # Addendum 6 — Project context and note sources
 
 The criteria for the References view's "Project context" section, the Source lines on Jira notes, and the amended link rule were added to `intent/current-feature.md` on Day 8. Results and checks (120 of 120 passed, including all earlier checks) are recorded in `evidence/day-08.md`.
+
+---
+
+# Addendum 7 — Reset to sample data
+
+The reset action's criteria were added to `intent/current-feature.md` on Day 12. Results and checks (141 of 141 passed, including all earlier checks) are recorded in `evidence/day-12.md`.

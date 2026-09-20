@@ -28,7 +28,8 @@
 </form>
 </section>
 <section class="panel">
-<h2>Saved intents</h2>
+<div class="panelhead"><h2 id="savedTitle" tabindex="-1">Saved intents</h2><button type="button" id="resetSample" class="secondary small">Reset to sample data</button></div>
+<p id="resetStatus" class="note" role="status" aria-live="polite"></p>
 <p id="emptyState" class="empty">No intents yet. An intent is a written outcome plus its inputs, outputs, constraints, success criteria, and stop condition. The form above starts with an example. Change it or save it as is with "Save intent".</p>
 <ul id="intentList" class="list"></ul>
 </section>
@@ -115,6 +116,12 @@
 </section>
 </div>
 </main>
+
+<dialog id="resetDialog" aria-labelledby="resetTitle">
+<h2 id="resetTitle">Reset to sample data?</h2>
+<p id="resetMsg"></p>
+<div class="actions"><button type="button" id="resetConfirm" class="danger">Replace with sample data</button><button type="button" id="resetCancel" class="secondary" autofocus>Cancel</button></div>
+</dialog>
 
 <dialog id="jiraDialog" aria-labelledby="jiraTitle">
 <div id="jiraStep1">
