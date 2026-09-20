@@ -14,6 +14,7 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - An Edit button on each listed intent that loads it back into the form
 - Sample text in all six fields whenever the form is in create mode, so a first-time user can save straight away and see what a completed intent looks like
 - Intents persisted in the browser's `localStorage`
+- A dashboard at the top of the Intents view showing how many intents are saved, how many lack a constraint or a stop condition, and a next-step line
 - A navigation bar at the top with three items, Intents, References, and About, each showing one view of the page
 - A References view listing the sources in Appendix E ("Sources and Further Reading") of `book/The-Ultimate-Guide-to-Claude.pdf`, plus the reference files in this repository
 - An About view explaining the book's "learn it, teach it, master it" concept
@@ -64,6 +65,9 @@ A user can record an intent in the six-part structure (outcome, inputs, outputs,
 - "Use in form" copies the six fields into the main form and closes the modal. Choosing "Save intent" then adds the intent to the list
 - The pasted story is not written to `localStorage`, and the app makes no request outside its own origin while the modal is used. HTML typed into the story is shown as text
 - The whole modal flow works with the keyboard only, with a visible focus outline on every control, and at 375px the modal needs no horizontal scrolling
+- The Intents view starts with a dashboard, visible at load, that shows "Intents saved" (the number of saved intents) and "Missing a constraint or stop condition" (the number of saved intents whose constraints or stop condition is empty). Both numbers are correct on load, after saving, after an update, and after a reload
+- The dashboard's next-step line says: with no saved intents, to save the example or start from a Jira story; with one or more lacking a constraint or stop condition, to edit them; otherwise, to write the next intent or start from a Jira story
+- The dashboard does not appear on the References or About views
 
 ## Stop when
 - Every success criterion above has been checked in the running app, and each pass or fail result is recorded in `evidence/build-tracker.md`

@@ -242,3 +242,9 @@ The project forbids AI calls from the browser (`context/non-goals.md`, `context/
 - Deferred by request, not built: pasting a second story, fixing the story for the user after they respond, and using a second story to refine the first (progressive intent).
 - Ideas that would improve this round, not built: recognizing more heading names; a way for the user to tell the app which line belongs where; showing which story line each field came from.
 - Day 13 ("Add navigation, useful empty states, obvious next actions") and Day 17 ("readiness score based on required fields and checkability rules") now overlap with this work. Day 17 could reuse the checkability rules written here.
+
+---
+
+# Addendum 5 — Dashboard
+
+The dashboard's criteria were added to `intent/current-feature.md` on Day 7. Its results, layout changes, and checks (101 of 101 passed, including all earlier checks) are recorded in `evidence/day-07.md`.

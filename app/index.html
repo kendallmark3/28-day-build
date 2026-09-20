@@ -4,6 +4,10 @@
 <nav aria-label="Main"><a href="#intents">Intents</a><a href="#references">References</a><a href="#about">About</a></nav></header>
 <main>
 <div id="view-intents">
+<section class="dash" aria-label="Dashboard" aria-live="polite">
+<div class="stats"><div class="stat"><strong id="statSaved">0</strong><span>Intents saved</span></div><div class="stat"><strong id="statGaps">0</strong><span>Missing a constraint or stop condition</span></div></div>
+<p id="nextStep" class="next"></p>
+</section>
 <section class="panel">
 <div class="panelhead"><h2 id="formTitle">New intent</h2><button type="button" id="openJira" class="secondary small">Start from a Jira story</button></div>
 <form id="intentForm" novalidate>

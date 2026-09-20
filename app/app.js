@@ -24,8 +24,23 @@ function setMode(id){
   submitBtn.textContent=editing?'Update intent':'Save intent';
   cancelBtn.hidden=!editing;
 }
+function dashboardState(intents){
+  const saved=intents.length;
+  const gaps=intents.filter(i=>!(i.constraints||'').trim()||!(i.stop||'').trim()).length;
+  let next='Next step: write your next intent, or start from a Jira story.';
+  if(saved===0)next='Next step: save the example below, or start from a Jira story.';
+  else if(gaps>0)next='Next step: edit the '+gaps+(gaps===1?' intent':' intents')+' missing a constraint or stop condition.';
+  return {saved,gaps,next};
+}
+function renderDashboard(intents){
+  const d=dashboardState(intents);
+  document.getElementById('statSaved').textContent=d.saved;
+  document.getElementById('statGaps').textContent=d.gaps;
+  document.getElementById('nextStep').textContent=d.next;
+}
 function render(){
   const intents=load();
+  renderDashboard(intents);
   listEl.textContent='';
   emptyEl.hidden=intents.length>0;
   intents.forEach(item=>{
