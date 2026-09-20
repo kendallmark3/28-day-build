@@ -39,3 +39,11 @@ Structured per `templates/evidence.md`.
 
 ## What changed in the next intent
 - Import a saved copy of a project (`docs/NEXT-INTENT.md`). To close the two blockers: a first-time user's unaided try, and `reviews/fresh-session-review.md` run in a new session.
+
+## Addendum: clean-clone test (after the release commit)
+- I cloned the public repository fresh, started it with `./run-app.sh 8401`, and ran the full suite against the clone. The app worked; 417 of 420 checks passed and the 3 book checks skipped as designed. The 3 failures were of two kinds:
+  - **A real defect in the app, missed by the release review:** the References view listed the book PDF under "In this repository", but the book is not in the public repository. Fixed by removing that entry (the page already names the book in its introduction). The check for it (N7d) had only ever passed because the book existed in my working folder.
+  - **Two check scripts compared network requests against a hard-coded port** (8092), so on any other port the app's own files looked like external requests. Fixed to use the configured address. Anyone re-running the suite on another port would have hit this.
+- The release review has a post-review addendum recording this and the new fingerprint of the reviewed files (`90c8bbb2488c118d`).
+- A mistake of mine while recording this: I used an unquoted shell heredoc for text containing backticks, so the shell ran the backtick text as commands and stripped it from the first version of this addendum. I noticed it from the "command not found" output and rewrote both addenda from a script.
+- Lesson: my own working folder had files the public repository does not, and only a fresh clone could show which claims depended on them.

@@ -33,4 +33,4 @@ From the repository root: `./run-app.sh` (or `run-app.bat`), then open http://lo
 - **Data lives in one browser.** There is no export, import, or sync; the next intent (`docs/NEXT-INTENT.md`) is a first step.
 
 ## Not included
-A server, accounts, AI calls, deleting records, a project switcher, and any activity analytics.
+A server, accounts, AI calls, deleting records, a project switcher, and any activity analytics. Also not included: the book itself (*The Ultimate Guide to Claude*), which is supplied separately; three checks that compare the app's text with the book skip when it is absent.

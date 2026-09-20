@@ -49,3 +49,8 @@ To declaring the project intent's stop condition met:
 
 ## Fingerprint
 Fingerprint of app/, context/, skills/, and intent/project-intent.md: before `c337cee5370d4155`, after `c337cee5370d4155`. Equal fingerprints show that this review did not modify the files it reviewed.
+
+## Post-review addendum
+After this review, a clean-clone test (clone the public repository, start it with `./run-app.sh`, run the checks) found one defect that this review missed. The References view listed `book/The-Ultimate-Guide-to-Claude.pdf` under "In this repository", but the book is deliberately not in the public repository (it is supplied separately), so the page told cloners a file was there that was not. I removed that one line from `app/index.html`. The same test also found two check scripts with a hard-coded port, fixed in `evidence/checks/regression.js`. This is a change to a file under review, made after the review, and it is recorded here so the fingerprint above is not misread. Fingerprint after the post-review fix: `90c8bbb2488c118d`.
+
+The review's statuses and decision are unchanged. The miss is an example of what the untested and non-independent items above could still be hiding.

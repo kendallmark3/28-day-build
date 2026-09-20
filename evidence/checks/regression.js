@@ -169,7 +169,7 @@ const IDS=['outcome','inputs','outputs','constraints','criteria','stop'];
   rec('N7b exactly the 6 links the book states plus the 6 context-file links; no article links',JSON.stringify(refs.links.map(l=>l.href).sort())===JSON.stringify([...ALLOWED,...CTX].sort())&&refs.artLinks===0,JSON.stringify(refs.links.map(l=>l.href)));
   rec('N7c every external link opens in new tab with rel noopener noreferrer and has link text',refs.links.every(l=>l.target==='_blank'&&/noopener/.test(l.rel)&&/noreferrer/.test(l.rel)&&l.text.length>3),'');
   const repoOk=refs.repo.map(p=>({p,ok:fs.existsSync(REPO+'/'+p)}));
-  rec('N7d every "In this repository" entry exists in the repo',repoOk.length===6&&repoOk.every(r=>r.ok),JSON.stringify(repoOk.filter(r=>!r.ok)));
+  rec('N7d every "In this repository" entry exists in the repo (the book is not one of them: it is not in the public repository)',repoOk.length===5&&repoOk.every(r=>r.ok),JSON.stringify(repoOk.filter(r=>!r.ok)));
   if(!BOOK){skip('N7e each linked address appears in the book text');}else{
   const inBook=['intent-driven-engineering.com','learnteachmaster.org','kendallmark3/intent-drive-starter','kendallmark3/intent-driven-plugin','kendallmark3/whackamole','docs.claude.com'].map(u=>[u,BOOK.toLowerCase().includes(u)]);
   rec('N7e each linked address appears in the book text',inBook.every(x=>x[1]),JSON.stringify(inBook.filter(x=>!x[1])));
@@ -184,7 +184,7 @@ const IDS=['outcome','inputs','outputs','constraints','criteria','stop'];
   if(!BOOK){skip('N6b quoted passages match the book verbatim');}else
   rec('N6b quoted passages match the book verbatim',BOOK.replace(/\s+/g,' ').includes(q1)&&BOOK.replace(/\s+/g,' ').includes(q2)&&about.all.includes(q1)&&about.all.includes(q2),'');
   // network
-  const external=reqs.filter(u=>!u.startsWith('http://127.0.0.1:8092/')&&!u.startsWith('data:'));
+  const external=reqs.filter(u=>!u.startsWith(URL)&&!u.startsWith('data:'));
   rec('N9 the app made no network requests outside its own origin',external.length===0,JSON.stringify(external));
   // layout on each view
   for(const [w,h] of [[1280,800],[375,812]]){
@@ -313,7 +313,7 @@ const IDS=['outcome','inputs','outputs','constraints','criteria','stop'];
   await page.setViewport({width:1280,height:800});
   await page.screenshot({path:(process.argv[2]||'/tmp/shotX.png').replace('X','modal-step2-1280')});
   // network: nothing left the origin
-  const ext=reqs.filter(u=>!u.startsWith('http://127.0.0.1:8092/')&&!u.startsWith('data:')&&!u.startsWith('blob:'));
+  const ext=reqs.filter(u=>!u.startsWith(URL)&&!u.startsWith('data:')&&!u.startsWith('blob:'));
   rec('J10b no request outside the app\'s own origin during the whole run, including the modal',ext.length===0,JSON.stringify(ext));
 
   // ===== Dashboard (Day 7) =====

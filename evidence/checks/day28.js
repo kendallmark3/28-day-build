@@ -88,5 +88,6 @@ require('./h.js')('day28',async c=>{
   ['app','context','skills'].forEach(walk);files.push('intent/project-intent.md');files.sort();
   const h=crypto.createHash('sha256');files.forEach(f=>{h.update(f+'\0');h.update(fs.readFileSync(REPO+'/'+f));});const fp=h.digest('hex').slice(0,16);
   const m=rv.match(/Fingerprint of app\/, context\/, skills\/, and intent\/project-intent\.md: before `([0-9a-f]{16})`, after `([0-9a-f]{16})`/);
-  rec('R8 the review changed nothing under review: the recorded fingerprints before and after are equal, and equal to the files as they are now ('+fp+')',!!m&&m[1]===m[2]&&m[2]===fp,m?m.slice(1).join(' / '):'no fingerprint recorded');
+  const post=rv.match(/Fingerprint after the post-review fix: `([0-9a-f]{16})`/);
+  rec('R8 the review changed nothing under review (fingerprints before and after are equal), and the files now match the last fingerprint the review records, which accounts for the one post-review fix ('+fp+')',!!m&&m[1]===m[2]&&(post?post[1]:m[2])===fp,m?m.slice(1).join(' / ')+(post?' / post-fix '+post[1]:''):'no fingerprint recorded');
 });
