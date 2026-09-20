@@ -475,3 +475,21 @@ function describeProblem(info){
   if(i.skipped>0)return {kind:'skipped',text:(i.skipped===1?'1 saved record was':i.skipped+' saved records were')+' invalid and left out. A copy of your original data was kept. Download it if you need '+(i.skipped===1?'that record':'those records')+'.',actions:['download','dismiss']};
   return null;
 }
+
+// The operating model shown on the Overview view: six stages, each with a live count from the stored data.
+// `count` is the number shown large; `rest` is the words that follow it ("3" + " saved, 2 ready").
+function flowStages(state,contextCount){
+  const ready=state.intents.filter(i=>checkIntent(i).ready).length;
+  const assumed=labelCounts(state.evidence).assumed;
+  const days=Object.keys((state.progress&&state.progress.days)||{}).length;
+  const promoted=state.capabilities.filter(c=>c.promoted).length;
+  const one=(n,w)=>n===1?w:w+'s';
+  return [
+    {id:'intent',name:'Intent',what:'Write what you want, and how you will know it is done.',count:state.intents.length,rest:' saved, '+ready+' ready',view:'intents'},
+    {id:'context',name:'Context',what:'Keep the rules and terms the work follows in files.',count:contextCount,rest:' '+one(contextCount,'file')+' the app follows',view:'references'},
+    {id:'build',name:'Build',what:'Do the work the intent asks for, and nothing more.',count:days,rest:' of 28 days done',view:null},
+    {id:'evidence',name:'Evidence',what:'Record what happened, and label each claim.',count:state.evidence.length,rest:' '+one(state.evidence.length,'claim')+', '+assumed+' assumed',view:'review'},
+    {id:'review',name:'Review',what:'Check the result against the intent.',count:state.reviews.length,rest:' '+one(state.reviews.length,'review')+' recorded',view:'review'},
+    {id:'capability',name:'Capability',what:'Keep what you repeat, once it has worked more than once.',count:promoted,rest:' of '+state.capabilities.length+' promoted',view:null}
+  ];
+}

@@ -18,6 +18,7 @@ A user's work is stored as connected records (projects, intents, evidence, revie
 - A readiness check (`checkIntent`) and a Readiness section on the Review view
 - A Guardrails section on the Review view: consequence selector, minimums for the chosen level marked Met, Open, or Check yourself, an approver field for high, and a summary
 - A problem banner on every view for four failures (unreadable data, invalid records, blocked storage, unexpected error), a kept copy of stored data, and recovery actions
+- A "How it fits together" panel on the Overview view showing the six-stage operating model with live counts
 
 ## Constraints
 - Browser-only HTML/CSS/JS, no framework, no build step, no backend, no AI call, no network request
@@ -76,6 +77,11 @@ These archived criteria no longer hold, on purpose, because this intent adds to 
 - A record with only an id and an outcome loads, is listed, and can be edited and saved with its other fields empty
 - When the browser blocks storage at load, a banner says nothing will be saved; when the app throws an unexpected error, a banner says something went wrong and to reload. Both are announced as alerts
 - "Reset to sample data" from an unreadable or invalid store gives a valid store and hides the banner. The banner is on every view, its buttons work by keyboard, it has no horizontal scroll at 375px, and it is absent (and the Save button position unchanged) when nothing is wrong
+- The Overview view has a "How it fits together" panel: an ordered list of six stages in the order Intent, Context, Build, Evidence, Review, Capability, each with a one-line description, a count, and a detail line, and a caption explaining that what is learned at Review sharpens the next intent
+- The counts read as sentences: "N saved, M ready" (Intent, by the readiness check); "N files the app follows" (Context, the files in the References view's Project context); "N of 28 days done" (Build, ticked days); "N claims, M assumed" (Evidence); "N reviews recorded" (Review); "N of M promoted" (Capability). They match the stored data and change without a reload after a save
+- Intent links to Intents, Context to References, Evidence and Review to Review, and each link opens that view. Build and Capability show no link
+- `flowStages(state, contextCount)` in `app/logic.js` is pure, returns the six stages in order, and gives zero counts for an empty project
+- The flow reads as a list, its arrows are hidden from assistive technology, its links are reachable by keyboard with a visible outline, and the stages stack in order, each wide enough to read without breaking words, with no horizontal scroll at 1280px or 375px. It uses no image, script, or external request
 
 ## Stop when
 - Every success criterion above has been checked in the running app and each result is recorded in the day's evidence record

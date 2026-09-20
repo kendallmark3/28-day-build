@@ -74,7 +74,31 @@ function renderProblem(info){
 function dataCopyText(){
   try{return localStorage.getItem(BACKUP_KEY)||localStorage.getItem(KEY)||'';}catch(e){return '';}
 }
+function renderFlow(state){
+  const list=document.getElementById('flow');
+  list.textContent='';
+  flowStages(state,document.querySelectorAll('#contextList li').length).forEach(st=>{
+    const li=document.createElement('li');
+    li.dataset.stage=st.id;
+    const count=document.createElement('p');
+    count.className='flowcount';
+    const n=document.createElement('strong');
+    n.textContent=st.count;
+    const d=document.createElement('span');
+    d.textContent=st.rest;
+    count.append(n,d);
+    li.append(line('h4','',st.name),line('p','',st.what),count);
+    if(st.view){
+      const a=document.createElement('a');
+      a.href='#'+st.view;
+      a.textContent='Go to '+({intents:'Intents',references:'References',review:'Review'}[st.view]);
+      li.appendChild(a);
+    }
+    list.appendChild(li);
+  });
+}
 function renderOverview(state){
+  renderFlow(state);
   const rows=[['Projects',state.projects.length],['Intents',state.intents.length],['Evidence records',state.evidence.length],['Reviews',state.reviews.length],['Capabilities',state.capabilities.length]];
   const el=document.getElementById('modelCounts');
   el.textContent='';
