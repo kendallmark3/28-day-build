@@ -16,3 +16,9 @@ Structured findings plus a gap statement.
 
 ## Guardrail
 Review only. Do not modify the work while reviewing it.
+
+## Owner
+Project owner
+
+## Version
+1.0

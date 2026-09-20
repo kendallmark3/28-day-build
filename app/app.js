@@ -91,7 +91,7 @@ function renderFlow(state){
     if(st.view){
       const a=document.createElement('a');
       a.href='#'+st.view;
-      a.textContent='Go to '+({intents:'Intents',references:'References',review:'Review'}[st.view]);
+      a.textContent='Go to '+({intents:'Intents',references:'References',review:'Review',capabilities:'Capabilities'}[st.view]);
       li.appendChild(a);
     }
     list.appendChild(li);
@@ -112,6 +112,7 @@ function render(){
   renderDashboard(intents);
   renderOverview(state);
   renderReview(state);
+  renderCapabilities(state);
   listEl.textContent='';
   emptyEl.hidden=intents.length>0;
   intents.forEach(item=>{
@@ -188,7 +189,7 @@ form.addEventListener('submit',e=>{
   announce(vanished?'The intent you were editing no longer exists, so this was saved as a new intent: '+shorten(values.outcome)+' ('+intents.length+' saved).':wasEditing?'Updated: '+shorten(values.outcome)+'.':'Saved: '+shorten(values.outcome)+' ('+intents.length+' saved).');
 });
 
-const VIEWS=['intents','review','overview','references','about'];
+const VIEWS=['intents','review','capabilities','overview','references','about'];
 function currentView(){
   const name=location.hash.replace('#','');
   return VIEWS.includes(name)?name:'intents';
@@ -508,6 +509,49 @@ document.getElementById('evidenceForm').addEventListener('submit',e=>{
   document.getElementById('claimText').focus();
   evidenceMessage('Evidence saved: '+shorten(claim)+' ('+LABEL_TEXT[label]+').');
 });
+
+/* ---- Capabilities view ---- */
+const REPO_URL='https://github.com/kendallmark3/28-day-build/blob/main/';
+const USE_LINKS={'cap-intent-check':{href:'#review',text:'Check a saved intent on Review'},'cap-evidence-review':{href:'#review',text:'Review an intent on Review'}};
+function renderCapabilities(state){
+  const list=document.getElementById('capList');
+  list.textContent='';
+  state.capabilities.forEach(cap=>{
+    const li=document.createElement('li');
+    li.className='claim';
+    li.dataset.cap=cap.id;
+    const head=document.createElement('div');
+    head.className='claimhead';
+    const b=document.createElement('span');
+    b.className='badge info';
+    b.textContent=LEVEL_NAMES[cap.level]||cap.level;
+    head.append(line('h3','capname',cap.name),b);
+    li.append(head,line('p','claimtext',cap.purpose));
+    if(cap.procedure){
+      li.appendChild(line('h4','','Procedure'));
+      const ol=document.createElement('ol');
+      cap.procedure.split('\n').forEach(step=>ol.appendChild(line('li','',step)));
+      li.appendChild(ol);
+    }
+    if(cap.output){li.appendChild(line('h4','','Output'));li.appendChild(line('p','',cap.output));}
+    if(cap.checks){li.appendChild(line('h4','','Checks'));li.appendChild(line('p','',cap.checks));}
+    li.appendChild(line('p','note','Owner: '+cap.owner+'. Version: '+cap.version+'.'));
+    const links=document.createElement('p');
+    if(cap.file){
+      const f=document.createElement('a');
+      f.href=REPO_URL+cap.file;f.target='_blank';f.rel='noopener noreferrer';f.textContent=cap.file;
+      links.append(document.createTextNode('Source file: '),f);
+    }
+    const use=USE_LINKS[cap.id];
+    if(use){
+      const u=document.createElement('a');
+      u.href=use.href;u.textContent=use.text;
+      links.append(document.createTextNode(cap.file?' · ':''),u);
+    }
+    li.appendChild(links);
+    list.appendChild(li);
+  });
+}
 
 /* ---- Failures: banner actions and unexpected errors ---- */
 document.getElementById('problemDownload').addEventListener('click',()=>{

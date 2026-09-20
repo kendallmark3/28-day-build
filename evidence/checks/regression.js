@@ -1,5 +1,5 @@
 const puppeteer=require('puppeteer-core');
-const URL=process.env.APP_URL||'http://127.0.0.1:8092/';const EXPECT_NAV=['Intents','Review','Overview','References','About'];const fs=require('fs');const REPO=require('path').resolve(__dirname,'../..');function loadBook(){
+const URL=process.env.APP_URL||'http://127.0.0.1:8092/';const EXPECT_NAV=['Intents','Review','Capabilities','Overview','References','About'];const fs=require('fs');const REPO=require('path').resolve(__dirname,'../..');function loadBook(){
   try{if(process.env.BOOK_TEXT_FILE)return fs.readFileSync(process.env.BOOK_TEXT_FILE,'utf8');}catch(e){}
   try{const pdf=REPO+'/book/The-Ultimate-Guide-to-Claude.pdf';if(fs.existsSync(pdf))return require('child_process').execFileSync('pdftotext',['-layout',pdf,'-'],{encoding:'utf8',maxBuffer:64*1024*1024});}catch(e){}
   return null;

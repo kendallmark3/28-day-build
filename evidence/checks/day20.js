@@ -15,10 +15,10 @@ require('./h.js')('day20',async c=>{
   rec('O2b the counts read as sentences and match the stored data: "3 saved, 2 ready", "7 files the app follows", "8 of 28 days done", "3 claims, 1 assumed", "1 review recorded", "1 of 2 promoted"',JSON.stringify(v.stages.map(s=>s.count+s.detail))==='["3 saved, 2 ready","7 files the app follows","8 of 28 days done","3 claims, 1 assumed","1 review recorded","1 of 2 promoted"]',JSON.stringify(v.stages.map(s=>s.count+s.detail)));
   const st=await c.stored();
   rec('O2c ...and equal the stored data itself (intents, evidence, reviews, ticked days, promoted capabilities)',+v.stages[0].count===st.intents.length&&+v.stages[3].count===st.evidence.length&&+v.stages[4].count===st.reviews.length&&+v.stages[2].count===Object.keys(st.progress.days).length&&+v.stages[5].count===st.capabilities.filter(x=>x.promoted).length,'');
-  rec('O3a links: Intent to #intents, Context to #references, Evidence and Review to #review; Build and Capability have none',JSON.stringify(v.stages.map(s=>s.href))==='["#intents","#references",null,"#review","#review",null]',JSON.stringify(v.stages.map(s=>s.href)));
+  rec('O3a links: Intent to #intents, Context to #references, Evidence and Review to #review, Capability to #capabilities; Build has none',JSON.stringify(v.stages.map(s=>s.href))==='["#intents","#references",null,"#review","#review","#capabilities"]',JSON.stringify(v.stages.map(s=>s.href)));
   const opened=[];
-  for(const id of ['intent','context','evidence','review']){await c.view('overview');await page.click('#flow li[data-stage="'+id+'"] a');await c.wait(150);opened.push((await page.evaluate(()=>['intents','review','overview','references','about'].filter(n=>!document.getElementById('view-'+n).hidden))).join());}
-  rec('O3b each link opens its view (Intents, References, Review, Review)',JSON.stringify(opened)==='["intents","references","review","review"]',JSON.stringify(opened));
+  for(const id of ['intent','context','evidence','review','capability']){await c.view('overview');await page.click('#flow li[data-stage="'+id+'"] a');await c.wait(150);opened.push((await page.evaluate(()=>['intents','review','capabilities','overview','references','about'].filter(n=>!document.getElementById('view-'+n).hidden))).join());}
+  rec('O3b each link opens its view (Intents, References, Review, Review, Capabilities)',JSON.stringify(opened)==='["intents","references","review","review","capabilities"]',JSON.stringify(opened));
   // ---- live update
   await c.view('intents');await page.click('#submitBtn');await c.view('overview');
   const v2=await panel();
@@ -31,8 +31,8 @@ require('./h.js')('day20',async c=>{
   rec('O5a the flow is an ordered list of six items; arrows are CSS-generated with empty alternative text (hidden from assistive technology), and there is no image, svg, or script',sem.tag==='OL'&&sem.items===6&&sem.allLi&&sem.arrows===0&&sem.after!=='none'&&/content:"\\2193" \/ ""/.test(css),JSON.stringify(sem));
   // keyboard
   await c.start(null);await page.click('#resetSample');await page.click('#resetConfirm');await c.view('overview');
-  const got=[];for(let i=0;i<20&&got.length<4;i++){await page.keyboard.press('Tab');const r=await page.evaluate(()=>{const e=document.activeElement;const s=getComputedStyle(e);return {t:e.closest('#flow')?e.textContent:'',ol:s.outlineStyle!=='none'&&parseFloat(s.outlineWidth)>0};});if(r.t)got.push(r);}
-  rec('O5b the four stage links are reachable by keyboard in order (Intents, References, Review, Review), each with a visible outline',got.length===4&&got.map(g=>g.t).join()==='Go to Intents,Go to References,Go to Review,Go to Review'&&got.every(g=>g.ol),JSON.stringify(got.map(g=>g.t)));
+  const got=[];for(let i=0;i<24&&got.length<5;i++){await page.keyboard.press('Tab');const r=await page.evaluate(()=>{const e=document.activeElement;const s=getComputedStyle(e);return {t:e.closest('#flow')?e.textContent:'',ol:s.outlineStyle!=='none'&&parseFloat(s.outlineWidth)>0};});if(r.t)got.push(r);}
+  rec('O5b the five stage links are reachable by keyboard in order (Intents, References, Review, Review, Capabilities), each with a visible outline',got.length===5&&got.map(g=>g.t).join()==='Go to Intents,Go to References,Go to Review,Go to Review,Go to Capabilities'&&got.every(g=>g.ol),JSON.stringify(got.map(g=>g.t)));
   // layout
   const lay=async(w,h)=>{await c.start(null,w,h);await page.click('#resetSample');await page.click('#resetConfirm');await c.view('overview');return page.evaluate(()=>{const li=[...document.querySelectorAll('#flow > li')].map(x=>x.getBoundingClientRect());return {minW:Math.round(Math.min(...li.map(r=>r.width))),stacked:li.every((r,i)=>i===0||r.top>li[i-1].bottom-1),sw:document.documentElement.scrollWidth,cw:document.documentElement.clientWidth};});};
   const desk=await lay(1280,800);const ph=await lay(375,812);

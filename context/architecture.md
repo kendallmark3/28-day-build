@@ -16,6 +16,7 @@ Built (as of Day 8):
 - Jira story modal: paste a story, get the six parts filled in, notes on what to improve, and a Markdown download. Rule-based; runs in the browser.
 - Review view: pick an intent, see its evidence and reviews, add a claim with a label, and change a claim's label.
 - Readiness and guardrails on the Review view: a readiness score for the selected intent, and the minimum checks for its consequence level.
+- Capabilities view: each packaged capability as a card (purpose, procedure, output, checks, owner, version, source file). The two built-in ones are the repository's skills; a test keeps the app's text equal to `skills/`.
 - Overview view: how the stages fit together (Intent, Context, Build, Evidence, Review, Capability) with a live count at each, and a count of each stored record type.
 - References view (including the project context files) and About view.
 

@@ -250,16 +250,16 @@ const iso=now=>new Date(now).toISOString();
 function builtInCapabilities(){
   return [
     {id:'cap-intent-check',name:'Intent check',level:'skill',file:'skills/intent-check.md',
-     purpose:'Find weaknesses in an intent before building it.',
-     procedure:'Read the intent. Do not perform the task.\nList ambiguity or multiple interpretations.\nList missing inputs, constraints, outputs, or success criteria.\nList contradictions.\nList criteria that cannot actually be checked.\nList a missing stop condition.\nPropose only the smallest edits needed.',
+     purpose:'Use before implementation to find weaknesses in an intent.',
+     procedure:'Read the intent. Do not perform the task. List, in order of importance:\nAmbiguity or multiple interpretations\nMissing inputs, constraints, outputs, or success criteria\nContradictions\nCriteria that cannot actually be checked\nMissing stop condition\nThen propose only the smallest edits needed.',
      output:'A short ordered list followed by a minimally revised intent.',
-     checks:'No features or implementation details were added that are not needed to remove ambiguity.',
+     checks:'Do not add features or implementation details that are not necessary to remove ambiguity.',
      owner:'Project owner',version:'1.0',uses:[],promoted:false,builtIn:true},
     {id:'cap-evidence-review',name:'Evidence-first review',level:'skill',file:'skills/evidence-first-review.md',
      purpose:"Review completed work against its intent without inheriting the builder's assumptions.",
-     procedure:'Read the stated intent first.\nInspect the resulting change.\nMark every success criterion: met, unmet, or untested.\nReport findings with direct evidence.\nIdentify what was not checked.\nChallenge likely failure modes without inventing defects.',
+     procedure:'Read the stated intent first.\nInspect the resulting change.\nMark every success criterion: met / unmet / untested.\nReport findings with direct evidence.\nIdentify what was not checked.\nChallenge likely failure modes without inventing defects.',
      output:'Structured findings plus a gap statement.',
-     checks:'The work under review was not modified while it was being reviewed.',
+     checks:'Review only. Do not modify the work while reviewing it.',
      owner:'Project owner',version:'1.0',uses:[],promoted:false,builtIn:true}
   ];
 }
@@ -490,6 +490,6 @@ function flowStages(state,contextCount){
     {id:'build',name:'Build',what:'Do the work the intent asks for, and nothing more.',count:days,rest:' of 28 days done',view:null},
     {id:'evidence',name:'Evidence',what:'Record what happened, and label each claim.',count:state.evidence.length,rest:' '+one(state.evidence.length,'claim')+', '+assumed+' assumed',view:'review'},
     {id:'review',name:'Review',what:'Check the result against the intent.',count:state.reviews.length,rest:' '+one(state.reviews.length,'review')+' recorded',view:'review'},
-    {id:'capability',name:'Capability',what:'Keep what you repeat, once it has worked more than once.',count:promoted,rest:' of '+state.capabilities.length+' promoted',view:null}
+    {id:'capability',name:'Capability',what:'Keep what you repeat, once it has worked more than once.',count:promoted,rest:' of '+state.capabilities.length+' promoted',view:'capabilities'}
   ];
 }

@@ -17,3 +17,9 @@ A short ordered list followed by a minimally revised intent.
 
 ## Check
 Do not add features or implementation details that are not necessary to remove ambiguity.
+
+## Owner
+Project owner
+
+## Version
+1.0
