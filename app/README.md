@@ -12,7 +12,7 @@ From the repository root:
 
 On Windows, run `run-app.bat` (or `run-app.bat 9000`). You need Python 3. The scripts only serve this folder; nothing else is installed.
 
-Your data stays in your browser's local storage. Use "Reset to sample data" on the Intents view to start from a worked example.
+Your data stays in your browser's local storage. Use "Reset to sample data" on the Intents view to start from a worked example. Each saved intent has a Delete button (it also deletes that intent's evidence and reviews), and "Start with an empty project" clears everything so you can use the app on real work.
 
 ## Files
 - `index.html`: the page and its views

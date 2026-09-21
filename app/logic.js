@@ -381,6 +381,23 @@ function nextIntentId(intents,now){
   return intents.reduce((m,i)=>typeof i.id==='number'&&i.id>=m?i.id+1:m,now);
 }
 
+// Deleting one intent also deletes the evidence and reviews that belong to it, so no record points at an intent that is gone.
+function removeIntent(state,id){
+  const gone=x=>String(x.intentId)===String(id);
+  const evidence=state.evidence.filter(e=>!gone(e));
+  const reviews=state.reviews.filter(r=>!gone(r));
+  return {state:Object.assign({},state,{intents:state.intents.filter(i=>String(i.id)!==String(id)),evidence,reviews}),
+    removed:{evidence:state.evidence.length-evidence.length,reviews:state.reviews.length-reviews.length}};
+}
+// What "start empty" would throw away, in words the confirmation dialog can show.
+function clearSummary(state){
+  const uses=state.capabilities.reduce((n,c)=>n+c.uses.length,0);
+  const days=Object.keys((state.progress&&state.progress.days)||{}).length;
+  const parts=[[state.intents.length,'intent','intents'],[state.evidence.length,'evidence record','evidence records'],[state.reviews.length,'review','reviews'],[uses,'capability use','capability uses'],[days,'ticked progress day','ticked progress days']]
+    .filter(p=>p[0]>0).map(p=>p[0]+' '+(p[0]===1?p[1]:p[2]));
+  return parts.length>1?parts.slice(0,-1).join(', ')+' and '+parts[parts.length-1]:parts.join('');
+}
+
 // Epistemic status: how many claims are observed, inferred, or assumed, and how many assumptions still need confirming.
 function labelCounts(evidence){
   const c={observed:0,inferred:0,assumed:0};

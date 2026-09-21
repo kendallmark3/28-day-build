@@ -54,6 +54,9 @@
 <p id="resetStatus" class="note" role="status" aria-live="polite"></p>
 <p id="emptyState" class="empty">No intents yet. An intent is a written outcome plus its inputs, outputs, constraints, success criteria, and stop condition. The form above starts with an example. Change it or save it as is with "Save intent".</p>
 <ul id="intentList" class="list"></ul>
+<div class="startover"><h3 id="startOverTitle">Finished the challenge?</h3>
+<p class="note">Delete any intent with its Delete button, or clear everything and use IntentWorkbench on real work.</p>
+<div class="actions"><button type="button" id="clearAll" class="secondary small">Start with an empty project</button></div></div>
 </section>
 </div>
 
@@ -253,6 +256,18 @@
 <h2 id="resetTitle">Reset to sample data?</h2>
 <p id="resetMsg"></p>
 <div class="actions"><button type="button" id="resetConfirm" class="danger">Replace with sample data</button><button type="button" id="resetCancel" class="secondary" autofocus>Cancel</button></div>
+</dialog>
+
+<dialog id="deleteDialog" aria-labelledby="deleteTitle">
+<h2 id="deleteTitle">Delete this intent?</h2>
+<p id="deleteMsg"></p>
+<div class="actions"><button type="button" id="deleteConfirm" class="danger">Delete intent</button><button type="button" id="deleteCancel" class="secondary" autofocus>Cancel</button></div>
+</dialog>
+
+<dialog id="clearDialog" aria-labelledby="clearTitle">
+<h2 id="clearTitle">Start with an empty project?</h2>
+<p id="clearMsg"></p>
+<div class="actions"><button type="button" id="clearConfirm" class="danger">Delete everything</button><button type="button" id="clearCancel" class="secondary" autofocus>Cancel</button></div>
 </dialog>
 
 <dialog id="jiraDialog" aria-labelledby="jiraTitle">

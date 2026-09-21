@@ -172,6 +172,13 @@ Load the sample project first.
 - [ ] **Reset to sample data** (Intents, Saved intents) names how many intents will be replaced; Cancel changes nothing; confirm gives 3 intents
 - [ ] Start editing an intent, then reset: the form returns to normal and does not overwrite anything
 
+### TC-15b (P1): delete one intent, or start over
+- [ ] Every saved intent has a **Delete** button; it opens a dialog naming the intent and how many evidence records and reviews will go with it; Cancel changes nothing
+- [ ] Confirm: the intent, its evidence, and its reviews are gone, the other intents are untouched, and the status line says "Deleted: …"
+- [ ] Start editing an intent, then delete it: the form returns to "New intent"
+- [ ] **Start with an empty project** (below the list) says what it will delete; Cancel changes nothing; confirm leaves no intents, evidence, reviews, capability uses, or ticked progress days
+- [ ] After clearing, write a new intent and take it through Review (readiness, evidence, review record)
+
 ### TC-16 (P1): unreadable data is not silently lost
 In developer tools, set the Local Storage key `intent-workbench-v1` to `{not json`, then reload.
 - [ ] A red banner says your saved data could not be read, and offers **Download a copy of the data**, **Start with an empty project**, **Dismiss**

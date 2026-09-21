@@ -175,7 +175,13 @@ function render(){
     edit.textContent='Edit';
     edit.setAttribute('aria-label','Edit intent: '+item.outcome);
     edit.addEventListener('click',()=>startEdit(item.id));
-    li.append(text,edit);
+    const del=document.createElement('button');
+    del.type='button';
+    del.className='secondary delete';
+    del.textContent='Delete';
+    del.setAttribute('aria-label','Delete intent: '+item.outcome);
+    del.addEventListener('click',()=>askDelete(item.id));
+    li.append(text,edit,del);
     listEl.appendChild(li);
   });
 }
@@ -393,6 +399,58 @@ document.getElementById('resetConfirm').addEventListener('click',()=>{
   resetStatus.textContent='Reset to sample data: 3 intents.';
   document.getElementById('startStatus').textContent='Sample project loaded. Open each view and look around.';
   document.getElementById('savedTitle').focus();
+});
+
+/* ---- Delete one intent, or start with an empty project ---- */
+const deleteDialog=document.getElementById('deleteDialog');
+const clearDialog=document.getElementById('clearDialog');
+let deletingId=null;
+function afterRemoval(message){
+  form.reset();
+  unfitFields();
+  clearError();
+  clearAnnouncement();
+  setMode(null);
+  render();
+  resetStatus.textContent=message;
+  document.getElementById('savedTitle').focus();
+}
+function askDelete(id){
+  const item=load().find(i=>i.id===id);
+  if(!item)return;
+  deletingId=id;
+  const r=removeIntent(loadState(),id).removed;
+  const also=[r.evidence&&r.evidence+(r.evidence===1?' evidence record':' evidence records'),r.reviews&&r.reviews+(r.reviews===1?' review':' reviews')].filter(Boolean).join(' and ');
+  document.getElementById('deleteMsg').textContent='"'+shorten(item.outcome)+'" will be deleted'+(also?', along with its '+also:'')+'. This cannot be undone.';
+  deleteDialog.showModal();
+}
+document.getElementById('deleteCancel').addEventListener('click',()=>deleteDialog.close());
+document.getElementById('deleteConfirm').addEventListener('click',()=>{
+  const state=loadState();
+  const item=state.intents.find(i=>i.id===deletingId);
+  deleteDialog.close();
+  if(!item){resetStatus.textContent='That intent was already deleted.';render();return;}
+  const result=removeIntent(state,deletingId);
+  if(!saveState(result.state)){resetStatus.textContent=storageProblem('delete');return;}
+  const wasEditing=editingId===deletingId;
+  deletingId=null;
+  if(wasEditing)afterRemoval('Deleted: '+shorten(item.outcome)+' ('+result.state.intents.length+' saved).');
+  else{render();resetStatus.textContent='Deleted: '+shorten(item.outcome)+' ('+result.state.intents.length+' saved).';document.getElementById('savedTitle').focus();}
+});
+document.getElementById('clearAll').addEventListener('click',()=>{
+  const what=clearSummary(loadState());
+  document.getElementById('clearMsg').textContent=what
+    ?'This deletes '+what+'. You will have an empty project. This cannot be undone.'
+    :'There is nothing saved, so nothing will be deleted.';
+  clearDialog.showModal();
+});
+document.getElementById('clearCancel').addEventListener('click',()=>clearDialog.close());
+document.getElementById('clearConfirm').addEventListener('click',()=>{
+  const ok=saveState(emptyState(Date.now()));
+  clearDialog.close();
+  if(!ok){resetStatus.textContent=storageProblem('clear');return;}
+  afterRemoval('Project cleared. Write your first intent above.');
+  document.getElementById('startStatus').textContent='';
 });
 
 /* ---- Another tab changed the stored data: show it here too ---- */

@@ -71,7 +71,7 @@ const IDS=['outcome','inputs','outputs','constraints','criteria','stop'];
   // Edit criteria 9-12 with defaults
   await page.reload({waitUntil:'load'});
   const editBtns=await page.$$eval('#intentList li > button',bs=>bs.map(b=>b.textContent.trim()));
-  rec('C9a every listed intent has an Edit button',editBtns.length===3&&editBtns.every(t=>t==='Edit'),JSON.stringify(editBtns));
+  rec('C9a every listed intent has an Edit button (and a Delete button after it)',editBtns.length===6&&editBtns.every((t,i)=>t===(i%2?'Delete':'Edit')),JSON.stringify(editBtns));
   let reached=false;
   for(let i=0;i<20;i++){await page.keyboard.press('Tab');if(await page.evaluate(()=>document.activeElement.classList.contains('edit'))){reached=true;break;}}
   const olEdit=await page.evaluate(()=>{const s=getComputedStyle(document.activeElement);return s.outlineStyle!=='none'&&parseFloat(s.outlineWidth)>0;});

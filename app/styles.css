@@ -35,3 +35,5 @@ button{font-family:inherit;min-height:40px;background:#b8430f}.eyebrow{color:#b8
 .panelhead{margin-bottom:0}.dash{padding:8px 20px}
 @media(max-width:600px){.panelhead{flex-wrap:nowrap}.panelhead h2{font-size:1.25rem}button.small{padding:6px 10px;font-size:.85rem}}
 a{color:#a4400f}
+
+.startover{margin-top:28px;padding-top:8px;border-top:1px solid #e8dfd4}.startover h3{margin:12px 0 4px}button.delete{padding:6px 14px;flex:none}.list li>.edit{margin-left:auto}
